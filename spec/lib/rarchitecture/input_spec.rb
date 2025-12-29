@@ -51,7 +51,7 @@ RSpec.describe RArchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("Role invalid value: must be one of admin, user")
+      expect(message).to eq("Role must be a string")
     end
 
     it "returns error when initials length is greater than max" do
@@ -60,7 +60,7 @@ RSpec.describe RArchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("Initials is too long (maximum is 3)")
+      expect(message).to eq("Initials is too long (maximum is 3 characters)")
     end
 
     it "returns error when initials length is less than min" do
@@ -69,7 +69,7 @@ RSpec.describe RArchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("Initials is too short (minimum is 2)")
+      expect(message).to eq("Initials is too short (minimum is 2 characters)")
     end
 
     it "returns ok when initials length is greater than min and less than max" do
@@ -93,6 +93,53 @@ RSpec.describe RArchitecture::ApplicationInput do
       expect(input.valid?).to be(true)
       expect(input.name).to eq("John Doe")
     end
+
+    context "with custom error message" do
+      it "returns error when email is not valid regex" do
+        @params[:email] = "John Doe"
+        input = StringInputWithCustomError.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Email format tidak benar")
+      end
+
+      it "returns custom error message when name is set to Array" do
+        @params[:name] = ["John Doe"]
+        input = StringInputWithCustomError.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Tipe data nama tidak benar")
+      end
+
+      it "returns custom error message when intials is too short" do
+        @params[:initials] = "J"
+        input = StringInputWithCustomError.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Initial minimal 2 karakter")
+      end
+
+      it "returns custom error message when intials is too long" do
+        @params[:initials] = "JohnDoe"
+        input = StringInputWithCustomError.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Initial maximal 2 karakter")
+      end
+
+      it "returns custom error message when street is blank" do
+        @params[:address][:street] = nil
+        input = StringInputWithCustomError.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Address Street harus di isi")
+      end
+    end
   end
 
   context "with Number validation" do
@@ -101,7 +148,7 @@ RSpec.describe RArchitecture::ApplicationInput do
       input = NumberInput.new(@params)
 
       expect(input.valid?).to be(false)
-      expect(input.errors.full_messages.first).to eq("Phone is too long (maximum is 13)")
+      expect(input.errors.full_messages.first).to eq("Phone is too long (maximum is 13 digits)")
     end
 
     it "returns error when initials length is less than min" do
@@ -109,7 +156,7 @@ RSpec.describe RArchitecture::ApplicationInput do
       input = NumberInput.new(@params)
 
       expect(input.valid?).to be(false)
-      expect(input.errors.full_messages.first).to eq("Phone is too short (minimum is 8)")
+      expect(input.errors.full_messages.first).to eq("Phone is too short (minimum is 8 digits)")
     end
 
     it "returns ok when initials length is greater than min and less than max" do
@@ -132,6 +179,35 @@ RSpec.describe RArchitecture::ApplicationInput do
 
       expect(input.valid?).to be(true)
       expect(input.code).to eq("+77")
+    end
+
+    context "with custom error message" do
+      it "returns custom error message when phone is blank" do
+        @params[:phone] = nil
+        input = NumberInputValidation.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Phone harus di isi")
+      end
+
+      it "returns custom error message when phone is too short" do
+        @params[:phone] = 861
+        input = NumberInputValidation.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Phone minimal 8 digit")
+      end
+
+      it "returns custom error message when phone is too long" do
+        @params[:phone] = 861_987_098_111_222
+        input = NumberInputValidation.new(@params)
+
+        expect(input.valid?).to be(false)
+        message = input.errors.full_messages.first
+        expect(message).to eq("Phone maksimal 13 digit")
+      end
     end
   end
 
@@ -173,6 +249,31 @@ RSpec.describe RArchitecture::ApplicationInput do
       expect(input.valid?).to be(true)
       expect(input.products[0].id).to eq(1)
     end
+
+    context "with custom error message" do
+      before do
+        @klass = ArrayInput
+        @klass.class_eval do
+          optional(:array_values).array(format: { message: "Tipe data `array values` harus Array" })
+        end
+      end
+
+      it "returns valid error message" do
+        @params[:array_values] = "Invalid"
+        input = @klass.new(@params)
+
+        expect(input.valid?).to be(false)
+        expect(input.errors.full_messages.first).to eq("Tipe data `array values` harus Array")
+      end
+
+      it "returns valid error message when blank" do
+        @params[:array_values] = nil
+        input = @klass.new(@params)
+
+        expect(input.valid?).to be(false)
+        expect(input.errors.full_messages.first).to eq("Tipe data `array values` harus Array")
+      end
+    end
   end
 
   context "with Hash validation" do
@@ -188,6 +289,31 @@ RSpec.describe RArchitecture::ApplicationInput do
       input = HashInput.new(@params)
 
       expect(input.valid?).to be(true)
+    end
+
+    context "with custom error message" do
+      before do
+        @klass = HashInput
+        @klass.class_eval do
+          optional(:address2).hash(format: { message: "Tipe data `address2` harus Hash" })
+        end
+      end
+
+      it "returns valid error message" do
+        @params[:address2] = "Invalid"
+        input = @klass.new(@params)
+
+        expect(input.valid?).to be(false)
+        expect(input.errors.full_messages.first).to eq("Tipe data `address2` harus Hash")
+      end
+
+      it "returns error when address2 is blank" do
+        @params[:address2] = nil
+        input = @klass.new(@params)
+
+        expect(input.valid?).to be(false)
+        expect(input.errors.full_messages.first).to eq("Tipe data `address2` harus Hash")
+      end
     end
   end
 
@@ -213,6 +339,21 @@ RSpec.describe RArchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       expect(input.errors.full_messages.first).to eq("Active must be boolean")
+    end
+
+    context "with custom error message" do
+      it "returns correct message" do
+        @params[:is_active] = "string"
+        klass = BoolInput
+        klass.class_eval do
+          optional(:is_active).bool(format: { message: "Tipe data `active` harus boolean" })
+        end
+
+        input = klass.new(@params)
+
+        expect(input.valid?).to be(false)
+        expect(input.errors.full_messages.first).to eq("Tipe data `active` harus boolean")
+      end
     end
   end
 
@@ -282,6 +423,13 @@ RSpec.describe RArchitecture::ApplicationInput do
       expect(input.output.keys).to include(:address_attributes)
       expect(input.output[:address_attributes].keys).to include(:country_attributes)
     end
+
+    it "strips unknown attributes and ensure the inherited works as expected" do
+      expect(@params).to have_key(:role)
+
+      input = UserCreationInput.new(@params)
+      expect(input.output).not_to have_key(:role)
+    end
   end
 end
 
@@ -289,23 +437,71 @@ class StringInput
   include ::Input
 
   optional(:name).string(default: "Saiful")
-  optional(:initials).string(min: 2, max: 3)
+  optional(:initials).string(length: { minimum: 2, maximum: 3 }, format: { allow_blank: true })
   optional(:state).any_of(["active", "inactive"], default: "active")
-  optional(:role).any_of(["admin", "user"], allow_blank: false)
+  optional(:role).any_of(["admin", "user"])
+end
+
+class StringInputWithCustomError
+  include ::Input
+
+  optional(:email).string(
+    format: { with: /\A[^@\s]+@[^@\s]+\z/, message: "Email format tidak benar" },
+  )
+  optional(:first_name).string(format: { allow_blank: true })
+  optional(:name).string(
+    default: "Saiful",
+    format: { allow_blank: true, message: "Tipe data nama tidak benar" },
+  )
+  optional(:initials).string(
+    length: {
+      minimum: 2,
+      maximum: 3,
+      too_short: "Initial minimal 2 karakter",
+      too_long: "Initial maximal 2 karakter",
+    },
+    format: { allow_blank: true },
+  )
+  optional(:state).string(any_of: ["active", "inactive"], default: "active")
+  optional(:role).any_of(["admin", "user"])
+
+  optional(:address).hash do
+    optional(:street).string(format: { message: "Street harus di isi" })
+  end
 end
 
 class NumberInput
   include ::Input
 
   optional(:code).string(default: "+62")
-  optional(:phone).number(min: 8, max: 13)
+  optional(:phone).number(
+    format: { allow_blank: true },
+    length: {
+      minimum: 8,
+      maximum: 13,
+    },
+  )
+end
+
+class NumberInputValidation
+  include ::Input
+
+  optional(:phone).number(
+    format: { message: "Phone harus di isi" },
+    length: {
+      minimum: 8,
+      maximum: 13,
+      too_short: "Phone minimal 8 digit",
+      too_long: "Phone maksimal 13 digit",
+    },
+  )
 end
 
 class ArrayInput
   include ::Input
 
   optional(:tags).array(default: ["tag 1"])
-  optional(:products).array do
+  optional(:products).array(format: { allow_blank: true }) do
     required(:id).number
   end
 end

@@ -4,7 +4,6 @@
 # ApplicationInput
 #
 
-require_relative "input/builder"
 require_relative "input/input"
 
 module RArchitecture

@@ -42,43 +42,35 @@ module Input
     end
 
     # Define an array attribute. Delegates to ArrayValidation module.
-    def array(**, &)
-      if block_given?
-        nested_klass = build_nested_klass(&)
-        Input::Validators::ArrayValidation.attach(@klass, @name, nested_klass: nested_klass)
-      else
-        Input::Validators::ArrayValidation.attach(@klass, @name, **)
-      end
-
+    def array(**options, &)
+      options[:nested_klass] = build_nested_klass(&)
+      Input::Validators::ArrayValidation.attach(@klass, @name, **options)
       self
     end
 
     # Define a hash attribute. Delegates to HashValidation when nested or from: provided.
-    def hash(**, &)
-      if block_given?
-        nested_klass = build_nested_klass(&)
-        Input::Validators::HashValidation.attach(@klass, @name, nested_klass: nested_klass)
-      else
-        Input::Validators::HashValidation.attach(@klass, @name, **)
-      end
-
+    def hash(**options, &)
+      options[:nested_klass] = build_nested_klass(&)
+      Input::Validators::HashValidation.attach(@klass, @name, **options)
       self
     end
 
     # Define a boolean attribute. Delegates to BoolValidation module.
-    def bool(default: nil)
-      Input::Validators::BoolValidation.attach(@klass, @name, default: default)
+    def bool(default: nil, **)
+      Input::Validators::BoolValidation.attach(@klass, @name, default: default, **)
       self
     end
 
     def any_of(values, **options)
       options[:any_of] = values
-      Input::Validators::Common.handle_options(@klass, @name, **options)
+      Input::Validators::StringValidation.attach(@klass, @name, **options)
     end
 
     private
 
     def build_nested_klass(&)
+      return unless block_given?
+
       nested_klass = Class.new { include Input }
       nested_klass.class_eval(&)
       nested_klass

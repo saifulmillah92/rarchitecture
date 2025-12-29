@@ -2,7 +2,7 @@
 
 class UserCreationInput < RArchitecture::ApplicationInput
   required(:email).string
-  optional(:address).hash(from: AddressInput)
+  optional(:address).hash(from: AddressInput, format: { allow_blank: true })
 
   transform_key(address: :address_attributes)
 

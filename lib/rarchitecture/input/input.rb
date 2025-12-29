@@ -75,7 +75,7 @@ module Input
   # Output representation of the input attributes as a plain symbol-keyed hash.
   def output
     out = attributes.dup
-    transforms = self.class.instance_variable_get(:@transforms) || {}
+    transforms = self.class.instance_variable_get(:@transforms)
     transforms.each do |from, to|
       from = from.to_sym
       next unless out.key?(from)
@@ -146,7 +146,6 @@ module Input
     # DSL entry for transforming an attribute key to another key on output.
     # Usage: `transform_key(address: :address_attributes)`
     def transform_key(**mapping)
-      @transforms ||= {}
       mapping.each { |k, v| @transforms[k.to_sym] = v.to_sym }
     end
 
@@ -164,33 +163,11 @@ module Input
       end
     end
 
-    # DSL entry for transforming an attribute key to another key on output.
-    # Usage: `transform(:address).to(:address_attributes)`
-    def transform(name)
-      TransformBuilder.new(self, name)
-    end
-
-    class TransformBuilder
-      def initialize(klass, name)
-        @klass = klass
-        @name = name.to_sym
-      end
-
-      def to(new_name)
-        unless @klass.instance_variable_get(:@transforms)
-          @klass.instance_variable_set(:@transforms, {})
-        end
-
-        @klass.instance_variable_get(:@transforms)[@name] = new_name.to_sym
-      end
-    end
-
     private
 
     # Register a key on the class and add a presence validation if required.
-    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
     def define_key(name, required: false)
-      @keys ||= {}
       @keys[name.to_sym] = { required: required }
       return unless required
 
@@ -208,7 +185,7 @@ module Input
         errors.add(name, :blank) if missing
       end
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength
 
     def key(name, required: false)
       define_key(name, required: required)
@@ -247,10 +224,10 @@ module Input
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def nested_array
-    self.class.instance_variable_get(:@nested_array_classes) || {}
+    @nested_array ||= self.class.instance_variable_get(:@nested_array_classes) || {}
   end
 
   def nested_classes
-    self.class.instance_variable_get(:@nested_classes) || {}
+    @nested_classes ||= self.class.instance_variable_get(:@nested_classes) || {}
   end
 end
