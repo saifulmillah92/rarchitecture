@@ -7,10 +7,10 @@ module Input
     # ArrayValidation
     #
     # Responsibilities:
-    # - Validate that a declared attribute is an Array when present.
+    # - Ensure an attribute value is an Array when present.
     # - Support nested array elements where each element is a Hash that
     #   conforms to an inline `Input` class (created via a block).
-    # - Register defaults for array attributes on the owning class.
+    # - Register default values for array attributes on the declaring class.
     #
     # Usage examples:
     #   # simple array
@@ -22,8 +22,8 @@ module Input
     #   end
     module ArrayValidation
       # Attach array validation to `klass` for the attribute `name`.
-      # When `nested_klass` is provided, each element will be validated
-      # against that nested Input class.
+      # Registers a default value and, when `nested_klass` is provided,
+      # validates each element against that nested Input class.
       def self.attach(klass, name, default: [], nested_klass: nil, **options)
         Common.add_default(klass, name, default)
         Common.add_nested_array_class(klass, name, nested_klass) if nested_klass
@@ -34,11 +34,13 @@ module Input
       end
 
       # Validate the array value on an instance. Ensures the attribute is
-      # an Array when present and iterates elements for nested validation.
+      # an Array when present. Respects `allow_blank` to skip validation
+      # if the attribute is not set. Iterates elements for nested validation
+      # when a nested Input class is provided.
       # rubocop:disable Metrics/CyclomaticComplexity
       def self.validate_array_value(instance, name, nested_klass, **options)
         format = options[:format] || {}
-        err_message = format[:message] || "#{name.to_s.titleize} must be a array"
+        err_message = format[:message] || "#{name.to_s.titleize} must be an array"
         value = instance[name]
 
         return if !instance.attributes.key?(name) && format[:allow_blank]
@@ -51,10 +53,10 @@ module Input
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
-      # Validate a single element inside the array. For nested objects we
-      # expect each element to be a Hash which is then validated by the
-      # provided nested Input class. Errors are re-keyed to include the
-      # element index (e.g. `roles[0].title`).
+      # Validate a single element inside the array. For nested objects,
+      # each element must be a Hash validated by the provided nested
+      # Input class. Errors are re-keyed to include the element index
+      # (e.g. `roles[0].title`).
       def self.validate_array_element(instance, name, index, element, nested_klass)
         unless element.is_a?(Hash)
           instance.errors.add("#{name}[#{index}]", "must be a hash")

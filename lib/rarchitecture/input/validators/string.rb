@@ -7,7 +7,6 @@ module Input
     # StringValidation
     #
     # Responsibilities:
-    # Responsibilities:
     # - Ensure an attribute value is a String when present.
     # - Optionally enforce minimum/maximum length constraints.
     # - Register a default value on the declaring class when provided.
@@ -15,12 +14,26 @@ module Input
     #
     # Usage examples:
     #   optional(:name).string
-    #   required(:code).string(minimum: 3, maximum: 10)
+    #   required(:code).string(length: { minimum: 3, maximum: 10 })
+    #
     # For more detailed usage and edge cases, see `input_spec.rb`.
+    #
+    # Options:
+    # - default: sets a default string value on the declaring class.
+    # - format:
+    #     :with        => regex pattern to match
+    #     :message     => custom error message
+    #     :allow_blank => allow empty values without error
+    # - any_of: restricts values to a given list
+    # - length:
+    #     :minimum   => minimum allowed length
+    #     :maximum   => maximum allowed length
+    #     :too_short => custom error message when below minimum
+    #     :too_long  => custom error message when above maximum
     module StringValidation
       # Attach string validations to `klass` for the attribute `name`.
-      # Accepts `default`, `format`, and `length` options. Additional options are
-      # ignored to keep the API forward-compatible.
+      # Accepts `default`, `format`, `any_of`, and `length` options.
+      # Additional options are ignored to keep the API forward-compatible.
       def self.attach(klass, name, **options)
         add_string_type_check(klass, name, **options)
         Common.add_default(klass, name, options[:default])
@@ -40,12 +53,10 @@ module Input
       def self.add_string_type_check(klass, name, **options)
         format = options[:format] || {}
 
-        klass.validate do
-          value = self[name]
+        Common.with_value(klass, name, format) do |value, record, message|
           next if value.is_a?(String)
-          next if value.blank? && format[:allow_blank]
 
-          errors.add(:base, format[:message] || "#{name.to_s.titleize} must be a string")
+          record.errors.add(:base, message || "#{name.to_s.titleize} must be a string")
         end
       end
 
@@ -58,14 +69,10 @@ module Input
         format = options[:format] || {}
         return unless format[:with].present?
 
-        klass.validate do
-          value = self[name]
-          next if value.blank? && format[:allow_blank]
+        Common.with_value(klass, name, format) do |value, record, message|
           next if value.to_s.match(format[:with])
 
-          message = format[:message]
-          message ||= "#{name.to_s.titleize} invalid format"
-          errors.add(:base, message)
+          record.errors.add(:base, message || "#{name.to_s.titleize} invalid format")
         end
       end
 
@@ -73,23 +80,18 @@ module Input
       # is included in the provided `any_of` list. Respects
       # `allow_blank` to skip validation on empty values,
       # and uses a custom error message if supplied.
-      # rubocop:disable Metrics/MethodLength
       def self.validate_any_of_values(klass, name, **options)
         values = options[:any_of]
         return if values.blank?
 
         format = options[:format] || {}
-        klass.validate do
-          value = self[name]
+        Common.with_value(klass, name, format) do |value, record, message|
           next if values.include?(value)
-          next if value.blank? && format[:allow_blank]
 
-          message = format[:message]
           message ||= "#{name.to_s.titleize} invalid value: must be one of #{values.join(", ")}"
-          errors.add(:base, message)
+          record.errors.add(:base, message)
         end
       end
-      # rubocop:enable Metrics/MethodLength
 
       # Add a length validator that ensures the value of `name`
       # meets optional `minimum` and `maximum` length constraints.
@@ -102,16 +104,12 @@ module Input
 
           length_value = value.to_s.length
           too_short = length[:minimum] && length_value < length[:minimum]
-          too_long = length[:maximum] && length_value > length[:maximum]
+          too_long  = length[:maximum] && length_value > length[:maximum]
 
-          too_short_error = length[:too_short]
-          too_short_error ||=
-            "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} characters)"
+          too_short_error = length[:too_short] || "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} characters)"
           errors.add(:base, too_short_error) if too_short
 
-          too_long_error = length[:too_long]
-          too_long_error ||=
-            "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} characters)"
+          too_long_error = length[:too_long] || "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} characters)"
           errors.add(:base, too_long_error) if too_long
         end
       end

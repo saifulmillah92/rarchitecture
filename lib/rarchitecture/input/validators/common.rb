@@ -6,12 +6,14 @@ module Input
     #
     # Centralized helpers used by validator modules. This module keeps
     # shared behavior in one place so individual validator modules can
-    # remain small and focused. Responsibilities include:
-    # - Formatting ActiveModel error objects into user-friendly messages.
-    # - Registering default attribute values on declaring classes.
-    # - Recording nested input classes for `hash` and `array` validators.
-    # - Resolving constant references passed via `from:` options.
-    # - Providing reusable length validators for strings and numeric-like values.
+    # remain small and focused.
+    #
+    # Responsibilities:
+    # - Format ActiveModel error objects into user-friendly messages.
+    # - Register default attribute values on declaring classes.
+    # - Record nested input classes for `hash` and `array` validators.
+    # - Resolve constant references passed via `from:` options.
+    # - Provide reusable helpers for value handling and blank checks.
     module Common
       # Format an `ActiveModel::Error` into a human-readable string.
       # Prefers a custom `:message` option when present, otherwise falls
@@ -66,6 +68,18 @@ module Input
         Object.const_get(name)
       rescue NameError
         nil
+      end
+
+      # Helper to fetch an attribute value and skip validation if blank
+      # and `allow_blank` is true. Yields the value and record to the
+      # provided block inside an instance-level `validate`.
+      def self.with_value(klass, name, format, &)
+        klass.validate do
+          value = self[name]
+          next if value.blank? && format[:allow_blank]
+
+          yield(value, self, format[:message])
+        end
       end
     end
   end

@@ -224,7 +224,7 @@ RSpec.describe RArchitecture::ApplicationInput do
       input = ArrayInput.new(@params)
 
       expect(input.valid?).to be(false)
-      expect(input.errors.full_messages.first).to eq("Tags must be a array")
+      expect(input.errors.full_messages.first).to eq("Tags must be an array")
     end
 
     it "returns ok when when is an array" do
