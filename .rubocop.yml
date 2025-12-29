@@ -1,0 +1,125 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  DefaultFormatter: fuubar
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  Exclude:
+    - 'rarchitecture.gemspec'
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+#################### Layout ###########################
+
+Layout/ClassStructure:
+  Enabled: true
+
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+Layout/FirstMethodParameterLineBreak:
+  Enabled: true
+
+Layout/HashAlignment:
+  EnforcedColonStyle:
+    - key
+    - table
+  EnforcedHashRocketStyle:
+    - key
+    - table
+
+Layout/HeredocArgumentClosingParenthesis:
+  Enabled: true
+
+Layout/IndentationConsistency:
+  Severity: error
+
+Layout/IndentationWidth:
+  Severity: error
+
+Layout/LineLength:
+  Max: 100
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+
+Layout/TrailingWhitespace:
+  Severity: error
+
+#################### Metrics ###########################
+
+Metrics/ModuleLength:
+  Max: 150
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb # nearly all spec files go over 25 lines
+
+#################### RSpec ###########################
+
+RSpec/InstanceVariable:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/SpecFilePathSuffix:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 25 # 5 was too idealistic
+
+RSpec/MultipleExpectations:
+  Max: 10 # 1 was too idealistic
+
+#################### Style ###########################
+
+Style/Documentation:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/AndOr:
+  EnforcedStyle: always
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ImplicitRuntimeError:
+  Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/WordArray:
+  EnforcedStyle: brackets
