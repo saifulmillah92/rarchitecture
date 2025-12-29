@@ -34,7 +34,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "activemodel"
+  spec.add_dependency "activesupport", ">= 6.1"
+
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry-rails"
+  spec.add_development_dependency "rubocop-rails-omakase"
   spec.add_development_dependency "rubocop-rspec"
 end
