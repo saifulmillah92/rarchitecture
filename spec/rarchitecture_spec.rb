@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe Rarchitecture do
+RSpec.describe RArchitecture do
   it "has a version number" do
-    expect(Rarchitecture::VERSION).not_to be nil
-  end
-
-  it "does something useful" do
-    expect(false).to eq(true)
+    expect(RArchitecture::VERSION).not_to be_nil
   end
 end

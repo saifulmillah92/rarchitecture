@@ -4,21 +4,21 @@ require_relative "lib/rarchitecture/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rarchitecture"
-  spec.version = Rarchitecture::VERSION
+  spec.version = RArchitecture::VERSION
   spec.authors = ["saifulmillah92"]
   spec.email = ["saifulmillah92@gmail.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
-  spec.license = "MIT"
+  spec.summary       = "Opinionated Rails architecture patterns for clarity and maintainability"
+  spec.description   = "RArchitecture provides reusable conventions, helpers, and structure guidelines to help Rails developers build audit-friendly, scalable applications. It emphasizes clear boundaries between controllers, services, and outputs, with a focus on maintainable code and onboarding clarity."
+  spec.homepage      = "https://github.com/saifulm/rarchitecture"
+  spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["homepage_uri"] = "https://github.com/saifulm/rarchitecture"
+  spec.metadata["source_code_uri"] = "https://github.com/saifulm/rarchitecture"
+  spec.metadata["changelog_uri"] = "https://github.com/saifulm/rarchitecture"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -34,8 +34,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency "activemodel"
+  spec.add_dependency "activesupport", ">= 6.1"
 
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "pry-rails"
+  spec.add_development_dependency "rubocop-rails-omakase"
+  spec.add_development_dependency "rubocop-rspec"
 end
