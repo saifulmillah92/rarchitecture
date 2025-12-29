@@ -106,10 +106,14 @@ module Input
           too_short = length[:minimum] && length_value < length[:minimum]
           too_long  = length[:maximum] && length_value > length[:maximum]
 
-          too_short_error = length[:too_short] || "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} characters)"
+          too_short_error = length[:too_short]
+          too_short_error ||=
+            "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} characters)"
           errors.add(:base, too_short_error) if too_short
 
-          too_long_error = length[:too_long] || "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} characters)"
+          too_long_error = length[:too_long]
+          too_long_error ||=
+            "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} characters)"
           errors.add(:base, too_long_error) if too_long
         end
       end

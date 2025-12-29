@@ -67,11 +67,13 @@ module Input
           too_long  = length[:maximum] && digits > length[:maximum]
 
           too_short_error = length[:too_short]
-          too_short_error ||= "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} digits)"
+          too_short_error ||=
+            "#{name.to_s.titleize} is too short (minimum is #{length[:minimum]} digits)"
           errors.add(:base, too_short_error) if too_short
 
           too_long_error = length[:too_long]
-          too_long_error ||= "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} digits)"
+          too_long_error ||=
+            "#{name.to_s.titleize} is too long (maximum is #{length[:maximum]} digits)"
           errors.add(:base, too_long_error) if too_long
         end
       end
