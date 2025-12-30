@@ -121,7 +121,7 @@ class Model
 
   # Mimic ActiveRecord's .destroy!
   def destroy!
-    self.class.get_var(:@collections).delete(self)
+    self.class.instance_variable_get(:@collections).delete(self)
     self
   end
 

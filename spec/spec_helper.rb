@@ -25,6 +25,25 @@ Sortable.module_eval do
   end
 end
 
+RArchitecture::ApplicationService.module_eval do
+  def create(attrs = {})
+    model.create(attrs)
+  end
+
+  def update(id, attrs = {})
+    record = find(id)
+    record.update(**attrs)
+
+    record
+  end
+
+  def destroy(id)
+    record = find(id)
+    record.destroy!
+    record
+  end
+end
+
 RSpec.configure do |config|
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
