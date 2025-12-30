@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rarchitecture"
+require "rspec/json_expectations"
 require "pry"
 
 Dir[File.join(__dir__, "../lib/rarchitecture", "**", "*.rb")].each do |file|

@@ -42,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-rails-omakase"
   spec.add_development_dependency "rubocop-rspec"
   spec.add_development_dependency "arel"
+  spec.add_development_dependency "rspec-json_expectations"
 end
