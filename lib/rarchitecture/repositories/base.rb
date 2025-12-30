@@ -7,6 +7,7 @@ module RArchitecture
     class Base < Basic
       DEFAULT_LIMIT  = 10
       DEFAULT_OFFSET = 0
+      TYPES = [:string, :text].freeze
 
       def limited
         filter(limit: @scope.limit_value)
@@ -25,7 +26,7 @@ module RArchitecture
 
       def search_fields
         @scope.klass.columns_hash
-              .select { |_, col| col.type == :string }
+              .select { |_, col| col.type.in?(TYPES) }
               .keys
               .reject { |name| name.in?(exclude_search_fields) }
       end
