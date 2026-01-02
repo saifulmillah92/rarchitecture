@@ -28,7 +28,7 @@ module Controllers
     end
 
     def edit
-      @object = output.new(service.find(params[:id]), **show_options).as_struct
+      @object = service.find(params[:id])
     end
 
     def show

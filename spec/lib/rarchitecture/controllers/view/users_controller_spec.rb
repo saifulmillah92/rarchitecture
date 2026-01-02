@@ -31,17 +31,17 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
+    # rubocop:disable RSpec/AnyInstance
     it "returns valid error path when code 500" do
-      Controllers::VIEW.class_eval do
-        def index
-          undefined
-        end
-      end
+      allow_any_instance_of(described_class).to receive(:index).and_raise(
+        StandardError, "Something went wrong",
+      )
 
       get :index
       expect(response).to have_http_status(:unprocessable_content)
       expect(response).to render_template("errors/index")
     end
+    # rubocop:enable RSpec/AnyInstance
   end
 
   context "with show method" do

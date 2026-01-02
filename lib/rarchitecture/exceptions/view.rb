@@ -24,7 +24,7 @@ module Exceptions
       send(handler, @object)
 
       flash.alert = @message if flash
-      return redirect_to request.referer, status: options[:status] if request.referer
+      return redirect_to request.referer if request.referer
 
       render "errors/index",
              locals: { message: @message, options: options },
