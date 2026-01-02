@@ -86,5 +86,7 @@ module RArchitecture
     end
 
     class Invalid < ::StandardError; end
+    class ClassNotFoundError < ::StandardError; end
+    class NotImplementedError < ::StandardError; end
   end
 end
