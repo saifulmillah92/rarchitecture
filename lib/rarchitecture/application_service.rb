@@ -66,7 +66,7 @@ module RArchitecture
     end
 
     def transaction(*, &)
-      ActiveRecord::Base.transaction(*, &block)
+      ActiveRecord::Base.transaction(*, &)
     end
 
     class Invalid < ::StandardError; end
