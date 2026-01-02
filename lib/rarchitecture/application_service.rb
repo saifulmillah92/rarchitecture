@@ -6,12 +6,6 @@ module RArchitecture
   class ApplicationService
     attr_reader :model, :user, :repository
 
-    @parent_transaction_count = 10
-
-    class << self
-      attr_accessor :parent_transaction_count
-    end
-
     def initialize(model:, user: nil, repository: nil)
       super()
 
@@ -72,17 +66,7 @@ module RArchitecture
     end
 
     def transaction(*, &)
-      if in_transaction?
-        yield
-      else
-        ActiveRecord::Base.transaction(*, &)
-      end
-    end
-
-    private
-
-    def in_transaction?
-      ActiveRecord::Base.connection.open_transactions > self.class.parent_transaction_count
+      ActiveRecord::Base.transaction(*, &block)
     end
 
     class Invalid < ::StandardError; end
