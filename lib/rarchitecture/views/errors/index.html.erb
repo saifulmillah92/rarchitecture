@@ -1,0 +1,117 @@
+<div class="error-container">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title"><%= message || "An unexpected error occurred. Please try again later."%></div>
+
+  <% if options[:backtrace].present? %>
+    <div class="error-message">
+      <p>
+        backtrace:
+        <br>
+        <%= options[:backtrace] %>
+      </p>
+    </div>
+  <% end %>
+  <div class="error-actions">
+    <a href="javascript:history.back()">Go Back</a>
+  </div>
+</div>
+
+<style>
+  body {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    color: #444;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .error-container {
+    max-width: 600px;
+    width: 90%;
+    padding: 50px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .error-icon {
+    font-size: 64px;
+    color: #e74c3c;
+    margin-bottom: 20px;
+  }
+
+  .error-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+
+  .error-message {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    color: #555;
+  }
+
+  .error-actions a {
+    display: inline-block;
+    margin: 0 10px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .error-actions a:hover {
+    text-decoration: underline;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .error-container {
+      padding: 30px;
+    }
+    .error-icon {
+      font-size: 48px;
+    }
+    .error-title {
+      font-size: 22px;
+    }
+    .error-message {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .error-container {
+      padding: 20px;
+    }
+    .error-icon {
+      font-size: 40px;
+    }
+    .error-title {
+      font-size: 20px;
+    }
+    .error-message {
+      font-size: 14px;
+    }
+    .error-actions a {
+      display: block;
+      margin: 10px 0;
+    }
+  }
+
+</style>

@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
-require "rarchitecture"
 require "rspec/json_expectations"
 require "pry"
+require "rails/all"
+require "bundler/setup"
+require "active_support"
+require "active_support/concern"
+require "active_support/core_ext"
+require "rails"
+require "action_controller/railtie"
+require "rails-controller-testing"
+require "rspec/rails"
 
 Dir[File.join(__dir__, "../lib/rarchitecture", "**", "*.rb")].each do |file|
   require file
@@ -11,6 +19,14 @@ end
 Dir[File.join(__dir__, "../spec/support", "**", "*.rb")].each do |file|
   require file
 end
+
+class TestApp < Rails::Application
+  config.eager_load = false
+  config.hosts.clear
+  config.active_support.to_time_preserves_timezone = :zone
+end
+
+TestApp.initialize!
 
 Sortable.module_eval do
   def filter_by_sort_column(sort_column)
@@ -52,4 +68,18 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.formatter = :documentation
+  config.full_backtrace = true
+
+  # This allows the use of `render_views` in your specs
+  config.include RSpec::Rails::ControllerExampleGroup, type: :controller
+
+  # This provides the 'setup' method expected by rails-controller-testing
+  config.include Rails::Controller::Testing::TestProcess, type: :controller
+  config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
+  config.include Rails::Controller::Testing::Integration, type: :controller
+
+  # For your request specs specifically
+  config.include Rails::Controller::Testing::Integration, type: :request
 end
