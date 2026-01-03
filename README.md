@@ -76,6 +76,7 @@ insert  config/routes.rb
 - Prebuilt CRUD views (`index`, `new`, `edit`)
 - RESTful routes (`resources :users`)
 - Automatic service and output delegation (`service`, `output`)
+- Ability to disable actions via undef_action
 
 No CRUD logic is written in the controller —
 all behavior is inherited from the base VIEW controller.
@@ -120,6 +121,7 @@ insert  config/routes.rb
 - Standard RESTful API actions (`index`, `show`, `create`, `update`, `destroy`)
 - JSON rendering handled by the base API controller
 - Automatic service delegation (`service`)
+- Ability to disable endpoints via undef_action
 
 No CRUD logic is written in the controller —
 all behavior is inherited from the base API controller.

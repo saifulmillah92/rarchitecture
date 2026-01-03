@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "modules/undef_action"
 require_relative "application_repository"
 
 module Rarchitecture
   class ApplicationService
+    prepend UndefAction
+
     attr_reader :model, :user, :repository
 
     def initialize(model:, user: nil, repository: nil)

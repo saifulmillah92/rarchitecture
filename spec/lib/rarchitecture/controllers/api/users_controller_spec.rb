@@ -99,6 +99,20 @@ RSpec.describe Api::UsersController, type: :request do
         )
       end
     end
+
+    context "when undef_action index" do
+      before { Api::UsersController.class_eval { undef_action :index } }
+      after {}
+
+      it "returns unprocessable content (422)" do
+        get "/api/users"
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response_body).to include_json(
+          error: { code: 400, message: "The 'index' action not found." },
+        )
+      end
+    end
   end
 
   context "with show method" do

@@ -19,7 +19,11 @@
 #
 # Use this as the common ancestor for all API controllers to ensure
 # consistent JSON responses, error handling, and service-driven architecture.
-
+#
+# 👉 If you want to customize any of the default actions,
+# simply uncomment the method definition below and modify it as needed.
+# These are provided as templates to reduce boilerplate, not as restrictions.
+#
 module Api
   class ApplicationController < Rarchitecture::ApplicationController::API
     # def index

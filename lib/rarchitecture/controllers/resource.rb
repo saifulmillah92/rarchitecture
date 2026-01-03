@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require "active_support/concern"
+require_relative "../modules/undef_action"
 
 module Resource
   extend ActiveSupport::Concern
+  prepend UndefAction
 
   included { around_action :catch_halt }
 
