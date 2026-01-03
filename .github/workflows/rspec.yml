@@ -1,0 +1,30 @@
+name: RSpec CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Define the Ruby versions you want to support
+        ruby-version: ['3.3']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        # Automatically runs 'bundle install' and caches gems
+        bundler-cache: true
+
+    - name: Run RSpec
+      run: bundle exec rspec
