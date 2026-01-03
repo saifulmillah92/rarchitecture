@@ -1,4 +1,41 @@
 # frozen_string_literal: true
 
+#
+# ApplicationService
+# Encapsulates business logic, CRUD operations, validation helpers, and transaction patterns.
+# Inherits from Rarchitecture::ApplicationService.
+#
+# Responsibilities:
+# - Coordinate repositories, validations, and business rules.
+# - Provide standard CRUD operations (all, find, create, update, destroy).
+# - Offer validation and authorization helpers for domain logic.
+# - Encapsulate transactions and error handling for complex operations.
+#
+# Initialization:
+# ```ruby
+# service = ApplicationService.new(
+#   model: User,          # ActiveRecord model class
+#   user: current_user,   # optional, current user context
+#   repository: UserRepository.new # optional, custom repository for persistence
+# )
+# ```
+#
+# Example usage:
+# ```ruby
+# service.all
+# service.find(1)
+# service.create(email: "alice@gmail.com")
+# service.update(1, name: "Bob")
+# service.destroy(1)
+# ```
+#
+# Validation and helper methods:
+# - validate!(record)
+# - assert!(*truths)
+# - authorize!(*truths)
+#
+# 📖 For detailed usage, custom service patterns, and advanced scenarios,
+# please refer to the README.md.
+#
 class ApplicationService < Rarchitecture::ApplicationService
 end

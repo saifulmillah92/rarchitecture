@@ -1,4 +1,26 @@
 # frozen_string_literal: true
 
+#
+# ApplicationInput
+# Base class for input validation and normalization in your application.
+# Inherits from Rarchitecture::ApplicationInput.
+#
+# Responsibilities:
+# - Centralize validation logic for create/update actions.
+# - Normalize raw input (strings, hashes, arrays) into consistent formats.
+# - Copy and propagate errors from nested models or external validations.
+# - Provide struct-like access to input keys.
+#
+# Quick Example:
+#   class UserCreationInput < ApplicationInput
+#     required(:email)
+#     optional(:name)
+#   end
+#
+#   input = UserCreationInput.new(params)
+#   input.valid?  # => true/false
+#
+# For more examples see README.md.
+#
 class ApplicationInput < Rarchitecture::ApplicationInput
 end

@@ -20,29 +20,29 @@ RSpec.describe Rarchitecture::ApplicationService do
     end
 
     it "returns a collection of all users limited by 1" do
-      expect(@service.all({ limit: 1 })).to eq([@user2])
+      expect(@service.all(limit: 1)).to eq([@user2])
     end
 
     it "returns a collection of all users filtered by name" do
-      expect(@service.all({ name: "Saiful" })).to eq([@user])
+      expect(@service.all(name: "Saiful")).to eq([@user])
     end
 
     it "returns a collection of all users filtered by email" do
-      expect(@service.all({ email: "saiful@example.com" })).to eq([@user])
+      expect(@service.all(email: "saiful@example.com")).to eq([@user])
     end
 
     it "returns empty collection when no users match filter" do
-      expect(@service.all({ name: "NonExistent" })).to eq([])
+      expect(@service.all(name: "NonExistent")).to eq([])
     end
 
     it "returns all collection of users when filtered by " \
        "sort_column(name) and sort_direction(desc)" do
-      expect(@service.all({ sort_column: "name", sort_direction: "desc" })).to eq([@user, @user2])
+      expect(@service.all(sort_column: "name", sort_direction: "desc")).to eq([@user, @user2])
     end
 
     it "returns all collection of users when filtered by " \
        "sort_column(name) and sort_direction(asc)" do
-      expect(@service.all({ sort_column: "name", sort_direction: "asc" })).to eq([@user2, @user])
+      expect(@service.all(sort_column: "name", sort_direction: "asc")).to eq([@user2, @user])
     end
   end
 
@@ -61,12 +61,12 @@ RSpec.describe Rarchitecture::ApplicationService do
 
   context "with find_by method" do
     it "finds a user by id" do
-      found_user = @service.find_by({ id: @user.id })
+      found_user = @service.find_by(id: @user.id)
       expect(found_user).to eq(@user)
     end
 
     it "returns nil when user not found" do
-      expect(@service.find_by({ id: 999 })).to be_nil
+      expect(@service.find_by(id: 999)).to be_nil
     end
   end
 
@@ -118,11 +118,11 @@ RSpec.describe Rarchitecture::ApplicationService do
     end
 
     it "returns the count of users filtered by name" do
-      expect(@service.count({ name: "Saiful" })).to eq(1)
+      expect(@service.count(name: "Saiful")).to eq(1)
     end
 
     it "returns zero when no users match filter" do
-      expect(@service.count({ name: "NonExistent" })).to eq(0)
+      expect(@service.count(name: "NonExistent")).to eq(0)
     end
   end
 end

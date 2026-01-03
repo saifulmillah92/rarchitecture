@@ -17,5 +17,32 @@ module <%= modules.join("::") %>
     def model
       <%= class_name %>
     end
+
+    # === OVERRIDABLE RESPONSE OPTIONS ===
+
+    # list_options defines how the response for the `index` action
+    # (list of records) should be formatted. It not only controls
+    # pagination details like limit, offset, current_page, and total count,
+    # but also specifies which serializer/format method will be applied
+    # to each record’s output object (e.g., UserOutput#mini_format).
+    #
+    # def list_options
+    #   {
+    #     use: :basic_format,
+    #     limit: limit,
+    #     offset: offset,
+    #     current_page: current_page,
+    #     total: record_counts,
+    #   }
+    # end
+
+    # show_options defines how the response for the `show` action
+    # (single record) should be formatted. It specifies which serializer/format
+    # method will be applied to the output object (e.g., UserOutput#mini_format),
+    # ensuring the resource is returned in the desired shape.
+    #
+    # def show_options
+    #   { use: :basic_format }
+    # end
   end
 end

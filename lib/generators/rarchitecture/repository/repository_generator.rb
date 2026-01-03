@@ -12,7 +12,7 @@ module Rarchitecture
         return if File.exist?(repo_path)
 
         say_status :missing, missing_repositories, :yellow
-        generate "rails_architecture:init for=repository"
+        generate "rarchitecture:init for=repository"
       end
 
       def create_repository_file

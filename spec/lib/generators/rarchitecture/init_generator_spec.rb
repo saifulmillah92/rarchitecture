@@ -5,7 +5,7 @@ require "generators/rarchitecture/init/init_generator"
 
 RSpec.describe Rarchitecture::Generators::InitGenerator, type: :generator do
   # Define where the generated files will go (use a tmp dir)
-  destination File.expand_path("../../../../../tmp", __dir__)
+  destination File.expand_path("../../../../tmp", __dir__)
 
   before do
     prepare_destination # Cleans the tmp directory before each test

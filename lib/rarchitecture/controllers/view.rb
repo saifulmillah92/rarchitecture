@@ -19,8 +19,8 @@ module Controllers
     end
 
     def index
-      @objects = output.array(service.all(params), **list_options).as_struct
-      @total = service.count(params)
+      @objects = output.array(service.all(**query_params), **list_options).as_struct
+      @total = record_counts
     end
 
     def new

@@ -15,7 +15,7 @@ module Rarchitecture
       @repository ||= ApplicationRepository.new(model.all)
     end
 
-    def all(query = {}, includes: [])
+    def all(includes: [], **query)
       repository.filter(query).include(*includes).limited.to_a
     end
 
@@ -61,6 +61,17 @@ module Rarchitecture
       repository.filter(params.except(:limit, :offset, :page)).count
     end
 
+    def validate!(input)
+      return input unless input
+      raise ActiveRecord::RecordInvalid, input if input.errors.any? || !input.valid?
+
+      input
+    end
+
+    def authorize!(*truths, on_error: "Not allowed")
+      raise Unauthorized, on_error if truths.none?
+    end
+
     def assert!(*truths, on_error: "Invalid")
       raise Invalid, on_error if truths.none?
     end
@@ -70,6 +81,8 @@ module Rarchitecture
     end
 
     class Invalid < ::StandardError; end
+    class Unauthorized < ::StandardError; end
+    class NoMethodError < ::StandardError; end
     class ClassNotFoundError < ::StandardError; end
     class NotImplementedError < ::StandardError; end
   end
