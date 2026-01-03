@@ -4,10 +4,10 @@ require "spec_helper"
 require "generators/rarchitecture/arc/arc_generator"
 
 RSpec.describe Rarchitecture::Generators::ArcGenerator, type: :generator do
-  let(:tmp_path) { File.expand_path("../../../../../tmp", __dir__) }
+  let(:tmp_path) { File.expand_path("../../../../tmp", __dir__) }
 
   # Define where the generated files will go (use a tmp dir)
-  destination File.expand_path("../../../../../tmp", __dir__)
+  destination File.expand_path("../../../../tmp", __dir__)
 
   before do
     prepare_destination # Cleans the tmp directory before each test

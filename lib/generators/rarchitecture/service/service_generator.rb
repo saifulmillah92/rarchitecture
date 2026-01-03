@@ -12,7 +12,7 @@ module Rarchitecture
         return if File.exist?(repo_path)
 
         say_status :missing, missing_application_service, :yellow
-        generate "rails_architecture:init for=service"
+        generate "rarchitecture:init for=service"
       end
 
       def ensure_repository_and_continue
@@ -20,7 +20,7 @@ module Rarchitecture
         return if File.exist?(repo_path)
 
         say_status :missing, missing_repositories(repo_path), :yellow
-        generate "rails_architecture:repository #{raw_name}"
+        generate "rarchitecture:repository #{raw_name}"
       end
 
       def create_service_file

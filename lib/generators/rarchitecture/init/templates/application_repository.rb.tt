@@ -1,4 +1,53 @@
 # frozen_string_literal: true
 
+#
+# ApplicationRepository
+# Encapsulates query logic, filtering, sorting, associations, and pagination.
+# Inherits from Rarchitecture::ApplicationRepository.
+#
+# Responsibilities:
+# - Centralize database query logic for a model.
+# - Provide built-in filters and scope management.
+# - Include associated records for optimized queries.
+# - Support custom query methods and default scopes.
+#
+# Quick Example:
+#   repo = ApplicationRepository.new(User.all)
+#   repo = repo.filter(email: "saiful@gmail.com")
+#   repo = repo.include(:address)
+#   repo.to_a
+#   # => [#<User id: 1, email: "saiful@gmail.com", name: "saiful">]
+#
+# Custom scope example:
+#   class UserRepository < ApplicationRepository
+#     def filter_by_name(name)
+#       @scope.where(name: name)
+#     end
+#
+#     def default_scope
+#       User.all
+#     end
+#   end
+#
+#   UserRepository.new.filter(name: "saiful").to_a
+#
+# Built-in filters:
+# - filter_by_q, filter_by_limit, filter_by_offset
+# - filter_by_sort_column, filter_by_sort_direction
+# - filter_by_page
+#
+# Available public methods:
+# - scope, options, includes
+# - filter(...), include(...)
+# - name, include?(id)
+# - new(params={}), get(id), first, last, count(...)
+# - each(&block), limited
+# - table, column(name), column_names, columns_hash(column)
+# - all_associations, to_sql, inspect
+# - exclude_search_fields, custom_limit, hashes
+#
+# 📖 For detailed usage guides, advanced filtering, and query patterns,
+# please refer to the README.md.
+#
 class ApplicationRepository < Rarchitecture::ApplicationRepository
 end

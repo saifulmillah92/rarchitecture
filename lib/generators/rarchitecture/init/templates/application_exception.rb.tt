@@ -1,6 +1,63 @@
 # frozen_string_literal: true
 
+#
+# ApplicationException
+# Centralized exception wrapper for the application, extending Rarchitecture::ApplicationException.
+# Provides specialized subclasses for API and View contexts, each integrating
+# with ExceptionHandler to map errors into consistent responses.
+#
+# ExceptionHandler provides:
+# - Dynamic handler resolution based on error class.
+# - Backtrace cleaning in debug mode.
+# - Standardized mappings for ActiveRecord, ActionController,
+#   ApplicationService, and other common exceptions.
+# - Utility methods for setting status codes and messages.
+#
+module ApplicationExceptionHandlers
+  # ApplicationExceptionHandlers:
+  # ----------------
+  # To add support for new domain-specific exceptions, define a custom error class
+  # in your application code in this module. The handler method name must be the
+  # underscored version of the exception class name. This naming convention is
+  # required because ExceptionHandler resolves handlers dynamically by taking the
+  # exception class, underscoring it, and looking for a matching method.
+  #
+  # Example:
+  #   # Step 1: Define a new exception class
+  #   class ApplicationService
+  #     class NoMethodError < ::StandardError; end
+  #   end
+  #
+  #   # Step 2: Add a handler method in this module
+  #   The method name must match the underscored class name:
+  #   # ApplicationService::NoMethodError → application_service_no_method_error
+  #   def application_service_no_method_error(error)
+  #     set_error(400, error.message)
+  #   end
+  #
+  # Why this works:
+  # - ExceptionHandler takes the raised exception class (e.g. ApplicationService::NoMethodError),
+  #   converts it to a snake_case identifier ("application_service_no_method_error"),
+  #   and looks for a method with that exact name.
+  # - By following this convention, your handler will be automatically invoked
+  #   whenever that exception is raised, ensuring consistent error responses
+  #   across both API and View contexts.
+  #
+end
+
 class ApplicationException < Rarchitecture::ApplicationException
-  class API < Rarchitecture::ApplicationException::API; end
-  class VIEW < Rarchitecture::ApplicationException::VIEW; end
+  class API < Rarchitecture::ApplicationException::API
+    # - API: Inherits from Rarchitecture::ApplicationException::API.
+    #   Handles errors and renders JSON payloads.
+    #   Supports debug backtraces, namespace scoping, and standardized messages.
+    include ApplicationExceptionHandlers
+  end
+
+  class VIEW < Rarchitecture::ApplicationException::VIEW
+    # - VIEW: Inherits from Rarchitecture::ApplicationException::VIEW.
+    #   Handles errors and renders HTML responses.
+    #   By default, renders "errors/index", but can be overridden by
+    #   creating a custom `index.html.erb` in `app/views/errors/`.
+    include ApplicationExceptionHandlers
+  end
 end

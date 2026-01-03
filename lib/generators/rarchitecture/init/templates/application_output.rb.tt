@@ -1,12 +1,28 @@
 # frozen_string_literal: true
 
+#
+# ApplicationOutput
+# Base class for formatting API responses.
+# Inherits from Rarchitecture::ApplicationOutput.
+#
+# Responsibilities:
+# - Wrap objects or collections in a consistent JSON structure.
+# - Include status codes, messages, and a root key (:data).
+# - Support pagination (offset-based or page-based) for collections.
+# - Delegate formatting to presenters when needed.
+#
+# Quick Example:
+#   ApplicationOutput.new(user).root_json
+#   # => { code: 200, message: "ok", data: { id: 1, email: "..." } }
+#
+# For advanced usage, custom formats, or array pagination examples,
+# see README.md.
+#
 class ApplicationOutput < Rarchitecture::ApplicationOutput
   # Extend or override methods here
 
-  def self.array(models, **)
-    Array.new(models, **, item_output: self)
-  end
+  def self.array(models, **) = Array.new(models, **, item_output: self)
 
-  class Array < Rarchitecture::ApplicationOutput::Array; end
-  class Error < Rarchitecture::ApplicationOutput::Error; end
+  Array = Rarchitecture::ApplicationOutput::Array
+  Error = Rarchitecture::ApplicationOutput::Error
 end

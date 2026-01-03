@@ -70,6 +70,8 @@ module ExceptionHandler
   def application_record_not_found(err)           = set_error 404, err.message
 
   def application_service_invalid(err)            = set_error 422, err.message
+  def application_unauthorized(err)               = set_error 403, err.message
   def application_service_class_not_found(err)    = set_error 400, err.message
+  def application_service_no_method_error(err)    = set_error 400, err.message
   def application_service_not_implemented_error(err) = set_error 400, err.message
 end

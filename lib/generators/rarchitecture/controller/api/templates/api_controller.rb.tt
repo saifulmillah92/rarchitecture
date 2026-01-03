@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 
+#
+# Api::ApplicationController
+# Base controller for all API endpoints under the Api namespace.
+# Inherits from Rarchitecture::ApplicationController::API,
+# which provides JSON-oriented behavior, standardized RESTful actions,
+# and service-based orchestration.
+#
+# Features:
+# - Centralized error handling (rescue_from StandardError with JSON output)
+# - Standard RESTful actions: index, show, create, update, destroy
+# - Input validation (permitted_params, validate!)
+# - Service layer delegation (service, query_params)
+# - Output formatting (output, default_output, render_json, render_json_array, render_error, render_empty_json)
+# - Authorization helpers (authorize!)
+# - Logging and failure capture (log_error, halt!)
+# - Pagination helpers (limit, offset, current_page, total count)
+#
+# Use this as the common ancestor for all API controllers to ensure
+# consistent JSON responses, error handling, and service-driven architecture.
 module Api
   class ApplicationController < Rarchitecture::ApplicationController::API
   end

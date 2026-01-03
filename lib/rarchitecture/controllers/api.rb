@@ -16,7 +16,7 @@ module Controllers
     end
 
     def index
-      result = service.all(query_params)
+      result = service.all(**query_params)
       render_json_array result, output, **list_options
     end
 

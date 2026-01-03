@@ -1,4 +1,58 @@
 # frozen_string_literal: true
 
+#
+# ApplicationController
+# Base controller for all HTML view endpoints.
+# Inherits from Rarchitecture::ApplicationController::VIEW,
+# which provides shared behavior and conventions for server-rendered pages.
+#
+# Features:
+# - Centralized error handling (rescue_from StandardError)
+# - Standard CRUD actions: index, new, edit, show, create, update, destroy
+# - Input validation (validate!)
+# - Service layer delegation (service, permitted_params)
+# - Output handling and formatting (default_output, handle_exception)
+# - Logging and failure capture (log_error, halt!)
+#
+# Use this as the common ancestor for all controllers rendering HTML views
+# to ensure consistent behavior and reduce boilerplate.
 class ApplicationController < Rarchitecture::ApplicationController::VIEW
+  # def index
+  #   @objects = output.array(service.all(**query_params), **list_options).as_struct
+  #   @total = record_counts
+  # end
+
+  # def new
+  #   @object = model.new
+  # end
+
+  # def edit
+  #   @object = service.find(params[:id])
+  # end
+
+  # def show
+  #   @object = output.new(service.find(params[:id]), **show_options).as_struct
+  # end
+
+  # def create
+  #   @object = service.create(permitted_params(:create))
+  #   @object = output.new(@object, **show_options).as_struct
+
+  #   flash.notice = "#{object_name} created!"
+  #   redirect_to url_for(controller: controller_name, action: :index)
+  # end
+
+  # def update
+  #   @object = service.update(params[:id], permitted_params(:update))
+  #   @object = output.new(@object, **show_options).as_struct
+
+  #   flash.notice = "#{object_name} updated!"
+  #   redirect_to url_for(controller: controller_name, action: :index)
+  # end
+
+  # def destroy
+  #   service.destroy(params[:id])
+  #   flash.notice = "#{object_name} deleted!"
+  #   redirect_to url_for(controller: controller_name, action: :index)
+  # end
 end

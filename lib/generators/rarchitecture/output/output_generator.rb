@@ -12,7 +12,7 @@ module Rarchitecture
         return if File.exist?(repo_path)
 
         say_status :missing, missing_application_output, :yellow
-        generate "rails_architecture:init for=output"
+        generate "rarchitecture:init for=output"
       end
 
       def create_output_file

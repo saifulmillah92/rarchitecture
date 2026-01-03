@@ -13,7 +13,7 @@ module Resource
   end
 
   def record_counts
-    @record_counts ||= service.count(query_params)
+    @record_counts ||= service.count(**query_params)
   end
 
   def object_name
