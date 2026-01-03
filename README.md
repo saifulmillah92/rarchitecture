@@ -1,5 +1,48 @@
-# Rarchitecture
+## 🚀 Quick Start
 
+Get up and running in minutes:
+
+#### 1. Add the gem to your application's `Gemfile`:
+```ruby
+gem "rarchitecture", git: "https://github.com/saifulmillah92/rarchitecture"
+```
+
+#### 2. Install:
+```bash
+bundle install
+```
+
+#### 3. Initialize the base architecture:
+```bash
+rails generate rarchitecture:init --view
+```
+- This creates shared base layers:
+- Repositories, Services, Inputs, Outputs
+- Exceptions
+- Base View controllers (modified)
+
+#### 4. Scaffold a `User` controller:
+```bash
+rails g rarchitecture:controller:view User
+```
+##### - Output:
+```bash
+create  app/controllers/users_controller.rb
+create  app/views/users/index.html.erb
+create  app/views/users/new.html.erb
+create  app/views/users/edit.html.erb
+insert  config/routes.rb
+```
+
+##### - 🎉 Endpoint generated successfully!
+Test it instantly:
+```bash
+curl -X GET http://localhost:3000/users
+```
+
+Now simply run the server and start `CRUD` operations on `User`. 🎉🎉🎉
+
+# About Rarchitecture Gem
 `Rarchitecture` is a lightweight architectural layer for Ruby on Rails that introduces clean, maintainable patterns for building scalable applications.
 
 It provides reusable base classes and generators for **Controller**, **Exception**, **Input**, **Output**, **Repository**, and **Service** layers — each with inline documentation and usage guides.
@@ -11,25 +54,19 @@ It provides reusable base classes and generators for **Controller**, **Exception
 Both share the same service, input, repository, and output layers.
 
 ---
-
-## 🚀 Installation
-
-Add the gem to your application's `Gemfile`:
-
-```ruby
-gem "rarchitecture", git: "https://github.com/saifulmillah92/rarchitecture"
-```
-
-Install:
-```bash
-bundle install
-```
-
-`Rarchitecture` is designed for teams that want:
+## Why Rarchitecture?
+designed for teams that want:
 - Predictable Rails structure
 - Clear separation of concerns
 - Minimal controller logic
 - Scalable patterns without overengineering
+
+## Compatibility
+`Rarchitecture` is tested with:
+- Ruby 3.3.x
+- Rails 8.1.x
+
+Other versions may work, but these are the officially supported versions.
 
 ## 📦 What This Gem Provides
 
