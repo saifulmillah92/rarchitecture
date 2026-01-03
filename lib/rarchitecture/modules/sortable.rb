@@ -45,7 +45,7 @@ module Sortable
       raise invalid, error_message unless validate_column
     end
 
-    case sort_direction
+    case direction
     when "asc"  then @scope.reorder(order_asc(sort_column))
     when "desc" then @scope.reorder(order_desc(sort_column))
     end
@@ -74,11 +74,7 @@ module Sortable
     order_nulls == "first" ? "NULLS FIRST" : "NULLS LAST"
   end
 
-  def sort_column
-    @options[:sort_column] || @options["sort_column"]
-  end
-
-  def sort_direction
+  def direction
     @options[:sort_direction] || @options["sort_direction"]
   end
 end
