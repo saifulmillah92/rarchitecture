@@ -3,7 +3,7 @@
 require_relative "controllers/api"
 require_relative "controllers/view"
 
-module RArchitecture
+module Rarchitecture
   class ApplicationController
     class API < Controllers::API; end
     class VIEW < Controllers::VIEW; end

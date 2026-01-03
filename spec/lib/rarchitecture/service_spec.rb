@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RArchitecture::ApplicationService do
+RSpec.describe Rarchitecture::ApplicationService do
   before do
     User.clear_all
     @user = User.create(name: "Saiful", email: "saiful@example.com")
@@ -54,7 +54,7 @@ RSpec.describe RArchitecture::ApplicationService do
 
     it "raises an error when user not found" do
       expect { @service.find(999) }.to raise_error(
-        RArchitecture::ApplicationService::Invalid, "User not found",
+        Rarchitecture::ApplicationService::Invalid, "User not found",
       )
     end
   end

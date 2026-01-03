@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+class ApplicationException < Rarchitecture::ApplicationException
+  class API < Rarchitecture::ApplicationException::API; end
+  class VIEW < Rarchitecture::ApplicationException::VIEW; end
+end

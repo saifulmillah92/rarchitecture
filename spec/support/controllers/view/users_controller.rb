@@ -2,11 +2,11 @@
 
 require "action_controller"
 
-class UsersController < RArchitecture::ApplicationController::VIEW
+class UsersController < Rarchitecture::ApplicationController::VIEW
   prepend_view_path File.expand_path("../../views", __dir__)
 
   def service
-    @service ||= RArchitecture::ApplicationService.new(model: model)
+    @service ||= Rarchitecture::ApplicationService.new(model: model)
   end
 
   def model

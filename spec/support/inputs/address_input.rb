@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddressInput < RArchitecture::ApplicationInput
+class AddressInput < Rarchitecture::ApplicationInput
   required(:street).string
   optional(:city).string
   optional(:zip_code).string

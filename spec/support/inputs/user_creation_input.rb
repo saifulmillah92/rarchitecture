@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserCreationInput < RArchitecture::ApplicationInput
+class UserCreationInput < Rarchitecture::ApplicationInput
   required(:email).string
   optional(:address).hash(from: AddressInput, format: { allow_blank: true })
 

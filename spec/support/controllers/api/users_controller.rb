@@ -3,7 +3,7 @@
 require "action_controller"
 
 module Api
-  class UsersController < RArchitecture::ApplicationController::API
+  class UsersController < Rarchitecture::ApplicationController::API
     # Rails 8 ActionController::API is very stripped down.
     # Including these modules provides the 'dispatch' and 'request' methods
     # that RSpec and the Rails Router expect.
@@ -22,7 +22,7 @@ module Api
     private
 
     def service
-      @service ||= RArchitecture::ApplicationService.new(model: model)
+      @service ||= Rarchitecture::ApplicationService.new(model: model)
     end
 
     def model

@@ -11,6 +11,6 @@ Dir[File.join(__dir__, "rarchitecture", "**", "*.rb")].each do |file|
   require file
 end
 
-module RArchitecture
+module Rarchitecture
   class Error < StandardError; end
 end

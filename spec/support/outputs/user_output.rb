@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserOutput < RArchitecture::ApplicationOutput
+class UserOutput < Rarchitecture::ApplicationOutput
   def mini_format
     { id: @object.id, email: @object.email }
   end

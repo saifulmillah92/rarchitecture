@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+class ApplicationOutput < Rarchitecture::ApplicationOutput
+  # Extend or override methods here
+
+  def self.array(models, **)
+    Array.new(models, **, item_output: self)
+  end
+
+  class Array < Rarchitecture::ApplicationOutput::Array; end
+  class Error < Rarchitecture::ApplicationOutput::Error; end
+end

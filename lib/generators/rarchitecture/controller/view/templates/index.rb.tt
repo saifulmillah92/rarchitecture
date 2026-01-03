@@ -1,0 +1,44 @@
+<!-- This is the Index view -->
+<h1><%%= object_name %> Page</h1>
+
+<!-- Flash messages -->
+<%% if flash.any? %>
+  <div id="flash_messages">
+    <%% flash.each do |key, message| %>
+      <div class="flash <%%= key %>"><%%= message %></div>
+    <%% end %>
+  </div>
+<%% end %>
+
+<%%= link_to "Create #{object_name}", "#{request.path}/new" %>
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <%% model_columns.each do |column| %>
+        <th><%%= column.name.titleize %></th>
+      <%% end %>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%% @objects.each do |object| %>
+      <tr>
+        <%% model_columns.each do |column| %>
+          <td><%%= object.public_send(column.name) %></td>
+        <%% end %>
+
+        <td style="white-space: nowrap;">
+          <%%= link_to "Edit", "#{request.path}/#{object.id}/edit" %>
+
+          <%%= button_to "Destroy",
+                        "#{request.path}/#{object.id}",
+                        method: :delete,
+                        form: { style: "display:inline" },
+                        style: "margin-left: 6px;" %>
+        </td>
+
+      </tr>
+    <%% end %>
+  </tbody>
+</table>

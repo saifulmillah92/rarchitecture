@@ -31,8 +31,8 @@ module Sortable
 
   def default_options
     {
-      sort_column:    self.class.sort_column || "id",
-      sort_direction: self.class.sort_direction || "desc",
+      sort_column:    self.class.sort_column,
+      sort_direction: self.class.sort_direction,
     }
   end
 

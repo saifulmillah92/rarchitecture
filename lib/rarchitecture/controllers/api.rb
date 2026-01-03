@@ -10,7 +10,7 @@ module Controllers
     rescue_from StandardError do |error|
       log_error(error)
       render_json error,
-                  RArchitecture::ApplicationException::API,
+                  Rarchitecture::ApplicationException::API,
                   debug: !Rails.env.production?,
                   namespace: controller_path
     end
@@ -29,7 +29,7 @@ module Controllers
       result = service.create(permitted_params(:create))
       render_json result,
                   output,
-                  message: "#{object_name} successfully created!",
+                  message: "#{object_name} created!",
                   status: :created,
                   **show_options
     end
@@ -38,13 +38,13 @@ module Controllers
       result = service.update(params[:id], permitted_params(:update))
       render_json result,
                   output,
-                  message: "#{object_name} successfully updated!",
+                  message: "#{object_name} updated!",
                   **show_options
     end
 
     def destroy
       service.destroy(params[:id])
-      render_empty_json message: "#{object_name} successfully deleted!"
+      render_empty_json message: "#{object_name} deleted!"
     end
 
     private
@@ -55,7 +55,7 @@ module Controllers
     end
 
     def render_error(model_or_string, **)
-      render_json(model_or_string, RArchitecture::ApplicationOutput::Error, **)
+      render_json(model_or_string, Rarchitecture::ApplicationOutput::Error, **)
     end
 
     def render_empty_json(model = nil, klass = default_output, **)

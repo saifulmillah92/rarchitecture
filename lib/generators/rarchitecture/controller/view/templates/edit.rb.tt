@@ -1,0 +1,30 @@
+<!-- This is the Edit view -->
+<h1>
+  Edit <%%= object_name %>
+  <%%= link_to "Back", url_for(controller: controller_name, action: :index) %>
+</h1>
+
+<!-- Flash messages -->
+<%% if flash.any? %>
+  <div id="flash_messages">
+    <%% flash.each do |key, message| %>
+      <div class="flash <%%= key %>"><%%= message %></div>
+    <%% end %>
+  </div>
+<%% end %>
+
+<%%= form_with model: @object, url: "/#{controller_path}/#{@object.id}", local: true do |f| %>
+  <%% model_columns.each do |column| %>
+    <%% next if %w[id created_at updated_at].include?(column.name) %>
+
+    <div style="margin-bottom: 10px;">
+      <label>
+        <%%= column.name.titleize %><%%= "*" if !column.null %>
+      </label><br>
+
+      <%%= f.text_field column.name %>
+    </div>
+  <%% end %>
+
+  <%%= f.submit "Update" %>
+<%% end %>

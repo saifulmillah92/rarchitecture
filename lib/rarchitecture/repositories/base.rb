@@ -2,7 +2,7 @@
 
 require_relative "basic"
 
-module RArchitecture
+module Rarchitecture
   module Repositories
     class Base < Basic
       DEFAULT_LIMIT  = 10
