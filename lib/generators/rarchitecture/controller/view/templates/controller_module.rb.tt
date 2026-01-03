@@ -2,6 +2,12 @@
 
 module <%= modules.join("::") %>
   class <%= name.titleize.pluralize %>Controller < ApplicationController
+    # If you want to disable specific default actions (e.g., :create, :index, :show, :update, :destroy),
+    # you can simply call `undef_action` with the action name. By default this line is commented out,
+    # but uncommenting it allows you to remove unwanted endpoints from the controller.
+    # Example: `undef_action :create` will disable the create action.
+    # undef_action :index, :create, :show, :update, :destroy
+
     private
 
     # Returns the service object responsible for handling

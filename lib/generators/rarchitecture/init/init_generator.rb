@@ -63,7 +63,6 @@ module Rarchitecture
           - Review inline comments and examples.
           - Extend or override methods as needed for your domain.
           - Scaffold new components with:
-              bin/rails g rarchitecture:init
               bin/rails g rarchitecture:arc ModelName
           - Replace "ModelName" with your model.
 

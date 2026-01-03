@@ -16,6 +16,11 @@
 #
 # Use this as the common ancestor for all controllers rendering HTML views
 # to ensure consistent behavior and reduce boilerplate.
+#
+# 👉 If you want to customize any of the default actions,
+# simply uncomment the method definition below and modify it as needed.
+# The provided templates are starting points, not restrictions.
+#
 class ApplicationController < Rarchitecture::ApplicationController::VIEW
   # def index
   #   @objects = output.array(service.all(**query_params), **list_options).as_struct
@@ -37,7 +42,7 @@ class ApplicationController < Rarchitecture::ApplicationController::VIEW
   # def create
   #   @object = service.create(permitted_params(:create))
   #   @object = output.new(@object, **show_options).as_struct
-
+  #
   #   flash.notice = "#{object_name} created!"
   #   redirect_to url_for(controller: controller_name, action: :index)
   # end
@@ -45,7 +50,7 @@ class ApplicationController < Rarchitecture::ApplicationController::VIEW
   # def update
   #   @object = service.update(params[:id], permitted_params(:update))
   #   @object = output.new(@object, **show_options).as_struct
-
+  #
   #   flash.notice = "#{object_name} updated!"
   #   redirect_to url_for(controller: controller_name, action: :index)
   # end

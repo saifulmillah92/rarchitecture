@@ -42,6 +42,16 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to render_template("errors/index")
     end
     # rubocop:enable RSpec/AnyInstance
+
+    context "when undef_action index" do
+      before { UsersController.class_eval { undef_action :index } }
+      after {}
+
+      it "returns unprocessable content (422)" do
+        get :index
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
   end
 
   context "with show method" do
