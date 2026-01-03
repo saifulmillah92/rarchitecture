@@ -6,7 +6,7 @@
 
 require_relative "input/input"
 
-module RArchitecture
+module Rarchitecture
   class ApplicationInput
     include ::Input
 

@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+module <%= modules.join("::") %>
+  class <%= name.titleize %>Repository < ApplicationRepository
+    # Overrides the default ordering (id DESC).
+    # Usage: sort_by :column, :asc | :desc
+    # sort_by :id, :desc
+
+    private
+
+    def default_scope
+      <%= class_name %>.all
+    end
+  end
+end

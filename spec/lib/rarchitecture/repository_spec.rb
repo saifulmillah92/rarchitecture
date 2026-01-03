@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RArchitecture::ApplicationRepository do
+RSpec.describe Rarchitecture::ApplicationRepository do
   before do
     User.clear_all
     @user = User.create(name: "Saiful", email: "saiful@example.com")

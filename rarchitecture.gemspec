@@ -4,12 +4,12 @@ require_relative "lib/rarchitecture/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rarchitecture"
-  spec.version = RArchitecture::VERSION
+  spec.version = Rarchitecture::VERSION
   spec.authors = ["saifulmillah92"]
   spec.email = ["saifulmillah92@gmail.com"]
 
   spec.summary       = "Opinionated Rails architecture patterns for clarity and maintainability"
-  spec.description   = "RArchitecture provides reusable conventions, helpers, and structure guidelines to help Rails developers build audit-friendly, scalable applications. It emphasizes clear boundaries between controllers, services, and outputs, with a focus on maintainable code and onboarding clarity."
+  spec.description   = "Rarchitecture provides reusable conventions, helpers, and structure guidelines to help Rails developers build audit-friendly, scalable applications. It emphasizes clear boundaries between controllers, services, and outputs, with a focus on maintainable code and onboarding clarity."
   spec.homepage      = "https://github.com/saifulm/rarchitecture"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.1.0"

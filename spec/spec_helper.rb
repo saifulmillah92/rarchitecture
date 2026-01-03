@@ -11,6 +11,7 @@ require "rails"
 require "action_controller/railtie"
 require "rails-controller-testing"
 require "rspec/rails"
+require "ammeter/init"
 
 Dir[File.join(__dir__, "../lib/rarchitecture", "**", "*.rb")].each do |file|
   require file
@@ -42,7 +43,7 @@ Sortable.module_eval do
   end
 end
 
-RArchitecture::ApplicationService.module_eval do
+Rarchitecture::ApplicationService.module_eval do
   def create(attrs = {})
     model.create(attrs)
   end
@@ -71,6 +72,10 @@ RSpec.configure do |config|
 
   config.formatter = :documentation
   config.full_backtrace = true
+
+  config.define_derived_metadata(file_path: %r{spec/lib/generators}) do |metadata|
+    metadata[:type] = :generator
+  end
 
   # This allows the use of `render_views` in your specs
   config.include RSpec::Rails::ControllerExampleGroup, type: :controller

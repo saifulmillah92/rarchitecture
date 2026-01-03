@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+module <%= modules.join("::") %>
+  class <%= name.titleize %>Output < ApplicationOutput
+  end
+end

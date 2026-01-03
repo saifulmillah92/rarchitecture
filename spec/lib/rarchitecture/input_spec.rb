@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RArchitecture::ApplicationInput do
+RSpec.describe Rarchitecture::ApplicationInput do
   before do
     @params = {
       email: "saiful@example.com",

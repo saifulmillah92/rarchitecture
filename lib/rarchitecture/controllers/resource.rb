@@ -75,7 +75,7 @@ module Resource
   end
 
   def application_input
-    RArchitecture::ApplicationInput.new(modified_request_body, model: model)
+    Rarchitecture::ApplicationInput.new(modified_request_body, model: model)
   end
 
   def output
@@ -85,7 +85,7 @@ module Resource
   end
 
   def default_output
-    RArchitecture::ApplicationOutput
+    Rarchitecture::ApplicationOutput
   end
 
   def render_json(model, klass = default_output, **)
@@ -94,7 +94,7 @@ module Resource
   end
 
   def render_error(model_or_string, **)
-    render_json(model_or_string, RArchitecture::ApplicationOutput::Error, **)
+    render_json(model_or_string, Rarchitecture::ApplicationOutput::Error, **)
   end
 
   def render_empty_json(model = nil, klass = default_output, **)

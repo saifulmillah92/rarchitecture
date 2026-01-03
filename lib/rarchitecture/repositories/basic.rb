@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RArchitecture
+module Rarchitecture
   module Repositories
     class Basic
       include Enumerable
@@ -72,7 +72,8 @@ module RArchitecture
       def each(&) = load(@scope).each(&)
 
       def inspect
-        "#<#{self.class} @options=#{@options}>"
+        address = "0x#{(object_id << 1).to_s(16).rjust(16, "0")}"
+        "#<#{self.class}:#{address} @options=#{@options}>"
       end
 
       def table

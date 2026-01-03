@@ -79,7 +79,7 @@ module Controllers
     end
 
     def handle_exception(error)
-      RArchitecture::ApplicationException::VIEW.new(error).handle(self)
+      Rarchitecture::ApplicationException::VIEW.new(error).handle(self)
     end
   end
 end

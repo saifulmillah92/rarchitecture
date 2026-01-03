@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+module <%= modules.join("::") %>
+  class <%= name.titleize.pluralize %>Controller < ApplicationController
+    private
+
+    # Returns the service object responsible for handling
+    # business logic related to this resource.
+    def service
+<% if service_exist? -%>
+      @service ||= <%= class_name %>Service.new
+<% else -%>
+      @service ||= ApplicationService.new(model: model)
+<% end -%>
+    end
+
+    def model
+      <%= class_name %>
+    end
+  end
+end

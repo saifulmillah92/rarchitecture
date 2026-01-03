@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+module <%= modules.join("::") %>
+  class <%= name.titleize %>CreationInput < ApplicationInput
+<% class_name.constantize.columns.reject { |c| c.name.in?(["id", "created_at", "updated_at"]) }.each do |column| -%>
+<% if column.null -%>
+    optional(:<%= column.name %>)
+<% else -%>
+    required(:<%= column.name %>)
+<% end -%>
+<% end -%>
+  end
+end

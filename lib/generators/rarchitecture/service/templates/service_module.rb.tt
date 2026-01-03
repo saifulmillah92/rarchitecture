@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+module <%= modules.join("::") %>
+  class <%= name.titleize %>Service < ApplicationService
+    def initialize(user: nil)
+      super(
+        model: <%= class_name %>,
+        user: user,
+        repository: <%= class_name %>Repository.new,
+      )
+    end
+  end
+end

@@ -2,7 +2,7 @@
 
 require_relative "application_repository"
 
-module RArchitecture
+module Rarchitecture
   class ApplicationService
     attr_reader :model, :user, :repository
 

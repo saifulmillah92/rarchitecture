@@ -3,7 +3,7 @@
 module ExceptionHandler
   def handler
     handler = @object.class.name.underscore.parameterize.underscore
-    handler = handler.gsub!("r_architecture_", "") if handler.include?("r_architecture_")
+    handler = handler.gsub!("rarchitecture_", "") if handler.include?("rarchitecture_")
     handler = :exception unless respond_to?(handler, true)
 
     handler
