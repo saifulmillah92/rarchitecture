@@ -33,7 +33,7 @@ RSpec.describe Rarchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("State invalid value: must be one of active, inactive")
+      expect(message).to eq("State must be one of: (active, inactive)")
     end
 
     it "returns error when role is invalid value" do
@@ -42,7 +42,7 @@ RSpec.describe Rarchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("Role invalid value: must be one of admin, user")
+      expect(message).to eq("Role must be one of: (admin, user)")
     end
 
     it "returns error when role null as allow_blank is false as default" do
@@ -51,7 +51,7 @@ RSpec.describe Rarchitecture::ApplicationInput do
 
       expect(input.valid?).to be(false)
       message = input.errors.full_messages.first
-      expect(message).to eq("Role must be a string")
+      expect(message).to eq("Role must be one of: (admin, user)")
     end
 
     it "returns error when initials length is greater than max" do
@@ -92,6 +92,11 @@ RSpec.describe Rarchitecture::ApplicationInput do
 
       expect(input.valid?).to be(true)
       expect(input.name).to eq("John Doe")
+    end
+
+    it "doesn't return error when code param is not given" do
+      input = StringInput.new(@params)
+      expect(input.valid?).to be(true)
     end
 
     context "with custom error message" do
@@ -181,6 +186,11 @@ RSpec.describe Rarchitecture::ApplicationInput do
       expect(input.code).to eq("+77")
     end
 
+    it "doesn't return error when postal code param is not given" do
+      input = NumberInput.new(@params)
+      expect(input.valid?).to be(true)
+    end
+
     context "with custom error message" do
       it "returns custom error message when phone is blank" do
         @params[:phone] = nil
@@ -250,6 +260,12 @@ RSpec.describe Rarchitecture::ApplicationInput do
       expect(input.products[0].id).to eq(1)
     end
 
+    it "doens't return error when tags2 param is not given" do
+      input = ArrayInput.new(@params)
+
+      expect(input.valid?).to be(true)
+    end
+
     context "with custom error message" do
       before do
         @klass = ArrayInput
@@ -286,6 +302,12 @@ RSpec.describe Rarchitecture::ApplicationInput do
     end
 
     it "returns ok when address is valid" do
+      input = HashInput.new(@params)
+
+      expect(input.valid?).to be(true)
+    end
+
+    it "doesn't return error when address1 param is not given" do
       input = HashInput.new(@params)
 
       expect(input.valid?).to be(true)
@@ -331,6 +353,12 @@ RSpec.describe Rarchitecture::ApplicationInput do
 
       expect(input.valid?).to be(true)
       expect(input.active).to eq("false")
+    end
+
+    it "doesn't return error when is_publish param is not given" do
+      input = BoolInput.new(@params)
+
+      expect(input.valid?).to be(true)
     end
 
     it "returns error when active is not a valid type value" do
@@ -440,6 +468,7 @@ class StringInput
   optional(:initials).string(length: { minimum: 2, maximum: 3 }, format: { allow_blank: true })
   optional(:state).any_of(["active", "inactive"], default: "active")
   optional(:role).any_of(["admin", "user"])
+  optional(:code).string
 end
 
 class StringInputWithCustomError
@@ -481,6 +510,7 @@ class NumberInput
       maximum: 13,
     },
   )
+  optional(:postal_code).number
 end
 
 class NumberInputValidation
@@ -504,6 +534,8 @@ class ArrayInput
   optional(:products).array(format: { allow_blank: true }) do
     required(:id).number
   end
+
+  optional(:tags2).array
 end
 
 class HashInput
@@ -513,10 +545,13 @@ class HashInput
     required(:street).string
     optional(:city).string
   end
+
+  optional(:address1).hash
 end
 
 class BoolInput
   include ::Input
 
   optional(:active).bool(default: true)
+  optional(:is_publish).bool
 end

@@ -49,13 +49,14 @@ module Input
       # the attribute is not set. When a nested target class exists, it
       # instantiates that class and merges its validation errors onto the
       # parent with a dotted key (e.g. `address.city`).
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def self.validate_hash_value(instance, name, target, **options)
         format = options[:format] || {}
         err_message = format[:message] || "#{name.to_s.titleize} must be a hash"
 
         value = instance[name]
-        return if !instance.attributes.key?(name) && format[:allow_blank]
+        return unless instance.attributes.key?(name)
+        return if value.blank? && format[:allow_blank]
         return instance.errors.add(:base, err_message) unless value.is_a?(Hash)
 
         nested = target.new(value)
@@ -66,7 +67,7 @@ module Input
           instance.errors.add("#{name}.#{err.attribute}", message)
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # Format an `ActiveModel::Error` into a human-friendly message.
       def self.format_error_message(err)

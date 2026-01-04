@@ -75,10 +75,30 @@ module Input
       # provided block inside an instance-level `validate`.
       def self.with_value(klass, name, format, &)
         klass.validate do
+          next unless attributes.key?(name)
+
           value = self[name]
           next if value.blank? && format[:allow_blank]
 
           yield(value, self, format[:message])
+        end
+      end
+
+      # Add a validator that ensures the value of `name`
+      # is included in the provided `any_of` list. Respects
+      # `allow_blank` to skip validation on empty values,
+      # and uses a custom error message if supplied.
+      def self.validate_any_of_values(klass, name, **options)
+        add_default(klass, name, options[:default])
+        values = options[:any_of]
+        return if values.blank?
+
+        format = options[:format] || {}
+        Common.with_value(klass, name, format) do |value, record, message|
+          next if values.include?(value)
+
+          message ||= "#{name.to_s.titleize} must be one of: (#{values.join(", ")})"
+          record.errors.add(:base, message)
         end
       end
     end

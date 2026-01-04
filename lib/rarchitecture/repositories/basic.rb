@@ -10,7 +10,7 @@ module Rarchitecture
 
       def initialize(scope = default_scope, options = nil, includes = nil)
         @scope     = scope
-        @options   = default_options.merge(options.to_h).as_json
+        @options   = default_options.merge(options.to_h).with_indifferent_access
         @includes  = Array(includes)
 
         define_dynamic_column_filters
@@ -26,8 +26,8 @@ module Rarchitecture
 
       def filter(new_options)
         clone.tap do |repo|
-          merged = sort_options(repo.options.merge(new_options.as_json))
-          repo.instance_variable_set(:@options, merged)
+          merged = sort_options(repo.options.merge(new_options))
+          repo.instance_variable_set(:@options, merged.with_indifferent_access)
           repo.send(:apply_filters, new_options)
         end
       end

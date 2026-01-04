@@ -37,13 +37,14 @@ module Input
       # an Array when present. Respects `allow_blank` to skip validation
       # if the attribute is not set. Iterates elements for nested validation
       # when a nested Input class is provided.
-      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def self.validate_array_value(instance, name, nested_klass, **options)
         format = options[:format] || {}
         err_message = format[:message] || "#{name.to_s.titleize} must be an array"
         value = instance[name]
 
-        return if !instance.attributes.key?(name) && format[:allow_blank]
+        return unless instance.attributes.key?(name)
+        return if value.blank? && format[:allow_blank]
         return instance.errors.add(:base, err_message) unless value.is_a?(Array)
         return unless nested_klass
 
@@ -51,7 +52,7 @@ module Input
           validate_array_element(instance, name, i, elem, nested_klass)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # Validate a single element inside the array. For nested objects,
       # each element must be a Hash validated by the provided nested

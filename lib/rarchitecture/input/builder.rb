@@ -63,7 +63,8 @@ module Input
 
     def any_of(values, **options)
       options[:any_of] = values
-      Input::Validators::StringValidation.attach(@klass, @name, **options)
+      Input::Validators::Common.validate_any_of_values(@klass, @name, **options)
+      self
     end
 
     private
