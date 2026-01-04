@@ -10,7 +10,7 @@ module Controllers
     rescue_from StandardError do |error|
       log_error(error)
       render_json error,
-                  Rarchitecture::ApplicationException::API,
+                  exception_class::API,
                   debug: !Rails.env.production?,
                   namespace: controller_path
     end
@@ -48,24 +48,6 @@ module Controllers
     end
 
     private
-
-    def render_json(model, klass = default_output, **)
-      output = klass.new(model, **)
-      render json: output.root_json, status: output.status
-    end
-
-    def render_error(model_or_string, **)
-      render_json(model_or_string, Rarchitecture::ApplicationOutput::Error, **)
-    end
-
-    def render_empty_json(model = nil, klass = default_output, **)
-      render_json(model, klass, **)
-    end
-
-    def render_json_array(array, klass = default_output, **)
-      output = klass.array(array, **)
-      render json: output.root_json, status: output.status
-    end
 
     def validate!(model, on_error = {})
       halt! render_json(model, **on_error) unless Array(model).all?(&:valid?)

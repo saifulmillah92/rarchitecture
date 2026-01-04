@@ -77,7 +77,7 @@ module Resource
   end
 
   def application_input
-    Rarchitecture::ApplicationInput.new(modified_request_body, model: model)
+    input_class.new(modified_request_body, model: model)
   end
 
   def output
@@ -87,7 +87,19 @@ module Resource
   end
 
   def default_output
-    Rarchitecture::ApplicationOutput
+    output_class
+  end
+
+  def exception_class
+    class_exists?("ApplicationException") ? ApplicationException : Rarchitecture::ApplicationException
+  end
+
+  def input_class
+    class_exists?("ApplicationInput") ? ApplicationInput : Rarchitecture::ApplicationInput
+  end
+
+  def output_class
+    class_exists?("ApplicationOutput") ? ApplicationOutput : Rarchitecture::ApplicationOutput
   end
 
   def render_json(model, klass = default_output, **)
@@ -96,7 +108,7 @@ module Resource
   end
 
   def render_error(model_or_string, **)
-    render_json(model_or_string, Rarchitecture::ApplicationOutput::Error, **)
+    render_json(model_or_string, output_class::Error, **)
   end
 
   def render_empty_json(model = nil, klass = default_output, **)
