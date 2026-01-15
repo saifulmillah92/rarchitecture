@@ -42,6 +42,36 @@ curl -X GET http://localhost:3000/users
 
 Now simply run the server and start `CRUD` operations on `User`. 🎉🎉🎉
 
+#### ✨ Beyond Standard Scaffold
+Unlike a plain Rails scaffold, `Rarchitecture` gives you dynamic filtering, sorting, and pagination out of the box.
+Example:
+```bash
+curl -X GET "http://localhost:3000/users?q=saiful&sort_column=id&sort_direction=desc&limit=10&offset=0"
+```
+
+This will:
+- Filter users by name and email (only if those columns exist in the User model)
+- Sort results by id in descending order
+- Limit results to 10 records
+- Offset results for pagination
+
+👉 Filtering is schema‑aware by default, but fully extensible:
+
+- Built‑in filters automatically apply to valid model columns (e.g. name, email).
+- You can override or extend filters in your repository to support custom logic (e.g. street_address via joins).
+
+#### 📑 Supported Query Parameters
+| Parameter        | Allowed Values      | Example                                                      |
+|------------------|---------------------|--------------------------------------------------------------|
+| `q`              | (search string)     | `?q=saiful`                                                 |
+| `name`, `email`  | (any model column)  | `?name=saiful&email=saiful@example.com`                     |
+| `sort_column`    | (any model column)  | `?sort_column=id`                                           |
+| `sort_direction` | `asc` / `desc`      | `?sort_direction=desc`                                      |
+| `limit`          | integer             | `?limit=10`                                                 |
+| `offset`         | integer             | `?offset=0`                                                 |
+
+For advanced or custom filters, see the [ApplicationRepository](#5-applicationrepository) section.
+
 # About Rarchitecture Gem
 `Rarchitecture` is a lightweight architectural layer for Ruby on Rails that introduces clean, maintainable patterns for building scalable applications.
 
@@ -167,6 +197,44 @@ all behavior is inherited from the base API controller.
 Facade for request parameter validation and normalization.
 Inherits from `Rarchitecture::ApplicationInput`.
 
+#### 📚 Usage Examples
+When you are not creating a custom input class (e.g. `UserAddressInput`), you can directly pass the model into ApplicationInput. It will automatically validate parameters against the model’s column definitions.
+
+- If a column is marked null: false in the database, ApplicationInput enforces it as required.
+- If a column allows null: true, it is treated as optional.
+- Errors are generated based on ActiveRecord’s column constraints, so you don’t need to manually define them.
+
+1. Missing required field → invalid
+```ruby
+  params = { name: "saiful" }
+  input  = ApplicationInput.new(params, model: User)
+
+  input.valid? # => false
+  input.errors.full_messages
+  # => ["Email can't be blank"]
+```
+
+2. All required fields present → valid
+```ruby
+  params = { email: "saiful@gmail.com", name: "saiful" }
+  input  = ApplicationInput.new(params, model: User)
+
+  input.valid? # => true
+  input[:email] # => "saiful@gmail.com"
+  input[:name]  # => "saiful"
+
+  input.output
+  # => {:email=>"saiful@gmail.com", :name=>"saiful"}
+```
+
+#### ⚙️ How it works in the controller
+This is where the default ApplicationInput comes into play:
+
+- Controllers automatically use a matching input class (e.g. UserCreationInput). If none exists, they fallback to the default ApplicationInput, which validates against the model’s schema.
+- This ensures that even without a custom input class, requests are still screened against the database schema (e.g. null: false constraints).
+
+👉 In short: `ApplicationInput` acts as a safety net in the controller — either using a custom input if available, or falling back to the model’s column rules to enforce required fields automatically
+
 ### Example: AddressCreationInput:
 ```ruby
   class AddressCreationInput < ApplicationInput
@@ -185,8 +253,8 @@ Inherits from `Rarchitecture::ApplicationInput`.
 ### Example: UserCreationInput
 ```ruby
   class UserCreationInput < ApplicationInput
-    required(:email).string                           # email must be present and a string
-    optional(:address).hash(from: AddressInput)       # nested input using AddressInput
+    required(:email).string                             # email must be present and a string
+    optional(:address).hash(from: AddressCreationInput) # nested input using AddressCreationInput
 
     transform_key(address: :address_attributes)       # renames :address to :address_attributes
 
@@ -203,27 +271,63 @@ Inherits from `Rarchitecture::ApplicationInput`.
   end
 ```
 
-### Key Points
+#### 📚 Usage Examples (Custom/Generated Inputs)
+Once you’ve defined a custom input (like `UserCreationInput`) or generated one via the Rails generator, the controller will automatically pick it up based on naming convention:
 
-- `required(:field)` → enforces presence and type.
-- `optional(:field)` → allows field but not mandatory.
-- `.hash(from: OtherInput)` → nests another input class for structured validation.
-- `transform_key` → renames keys in the normalized output (e.g. Rails convention *_attributes).
-- `validate :method_name` → adds custom validation logic beyond type checks.
+- For a `UsersController#create` action → it looks for `UserCreationInput`.
+- For a `UsersController#update` action → it looks for `UserUpdateInput`.
+- If no matching input class exists, it falls back to the default ApplicationInput and validates against the model’s schema.
 
-### Example Output
+So the “automatic” part is really convention‑driven. As long as your input class name matches the controller action and model, you don’t need to wire it up manually — the framework resolves it for you.
+
+1. Missing required field → invalid
 ```ruby
-  UserCreationInput.new({ email: "saiful@gmail.com", address: { street: "Bogor" }}).output
-  # => { email: "saiful@gmail.com", address_attributes: { street: "Bogor" } }
+  ## nested validation
+  params = { email: "saiful@example.com", address: { city: "Bogor" } }
+  input = UserCreationInput.new(params)
+
+  input.valid? # => false
+  input.errors.full_messages
+  # => ["Address street can't be blank"]
+
+  params = { email: "saiful@example.com", address: { street: "bogor", city: "Bogor", country: { code: "IND" } } }
+  input = UserCreationInput.new(params)
+
+  input.valid? # => false
+  input.errors.full_messages
+  # => ["Address country name can't be blank"]
 ```
 
-### Validation Types
+2. All required fields present → valid
+```ruby
+  params = { email: "saiful@example.com", address: { street: "bogor", city: "Bogor", country: { name: "INDONESIA", code: "IND" } } }
+  input = UserCreationInput.new(params)
 
-Available validation types are:
-- `.string` → enforces the value must be a string.
-- `.bool` → enforces the value must be a boolean (true/false).
-- `.array` → enforces the value must be an array.
-- `.hash` → enforces the value must be a hash (nested structure).
+  input.valid? # => true
+  input.email # => "saiful@example.com"
+  input.address.output
+  # => {:street=>"bogor", :city=>"Bogor", :country_attributes=>{:name=>"INDONESIA", :code=>"IND"}}
+
+  input.output
+  # => {:email=>"saiful@example.com",
+  # :address_attributes=>{:street=>"bogor", :city=>"Bogor", :country_attributes=>{:name=>"INDONESIA", :code=>"IND"}}}
+```
+
+#### 🧩 Validation DSL
+The validation DSL provides a concise way to declare input rules, field requirements, and type constraints.
+
+##### 🔑 Field Declarations
+- required(:field) → enforces presence and type.
+- optional(:field) → allows field but not mandatory.
+- .hash(from: OtherInput) → nests another input class for structured validation.
+- transform_key → renames keys in the normalized output (e.g. Rails convention *_attributes).
+- validate :method_name → adds custom validation logic beyond type checks.
+
+##### 📝 Types
+- .string → enforces the value must be a string.
+- .bool → enforces the value must be a boolean (true/false).
+- .array → enforces the value must be an array.
+- .hash → enforces the value must be a hash (nested structure).
 
 ### Default Values
 
@@ -255,30 +359,6 @@ create  app/inputs/user_update_input.rb
 - `UserUpdateInput` for update actions
 - Attribute definitions based on model columns
 - Required and optional field validation
-
-#### 📚 Usage Examples
-1. Missing required field → invalid
-```ruby
-  params = { name: "saiful" }
-  input = UserCreationInput.new(params)
-
-  input.valid? # => false
-  input.errors.full_messages
-  # => ["Email can't be blank"]
-```
-
-2. All required fields present → valid
-```ruby
-  params = { email: "saiful@gmail.com", name: "saiful" }
-  input = UserCreationInput.new(params)
-
-  input.valid? # => true
-  input[:email] # => "saiful@gmail.com"
-  input[:name]  # => "saiful"
-
-  input.output
-  # => {:email=>"saiful@gmail.com", :name=>"saiful"}
-```
 
 #### Notes:
 - Any parameter not explicitly declared is discarded
