@@ -15,14 +15,16 @@ module Rarchitecture
       @model = model
       @user  = user
       @repository = repository
-      @repository ||= ApplicationRepository.new(model.all)
+      @repository ||= ApplicationRepository.new(model.all) if model.respond_to?(:all)
     end
 
     def all(includes: [], **query)
+      assert_repository!
       repository.filter(query).include(*includes).limited.to_a
     end
 
     def find(id, includes: [])
+      assert_repository!
       record = repository.include(*includes).get(id)
       assert! record.present?, on_error: "#{model.class_name} not found"
 
@@ -30,14 +32,17 @@ module Rarchitecture
     end
 
     def find_by(query = {})
+      assert_repository!
       model.find_by(query)
     end
 
     def new(attrs = {})
+      assert_repository!
       model.new(attrs)
     end
 
     def create(attrs = {})
+      assert_repository!
       transaction do
         record = model.create!(attrs)
         record.reload
@@ -61,6 +66,7 @@ module Rarchitecture
     end
 
     def count(params = {})
+      assert_repository!
       repository.filter(params.except(:limit, :offset, :page)).count
     end
 
@@ -88,5 +94,13 @@ module Rarchitecture
     class NoMethodError < ::StandardError; end
     class ClassNotFoundError < ::StandardError; end
     class NotImplementedError < ::StandardError; end
+
+    private
+
+    def assert_repository!
+      return if repository
+
+      raise NotImplementedError, "#{model} does not support this action"
+    end
   end
 end

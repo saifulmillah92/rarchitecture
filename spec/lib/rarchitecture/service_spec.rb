@@ -14,6 +14,78 @@ RSpec.describe Rarchitecture::ApplicationService do
     expect(described_class).to be_a(Class)
   end
 
+  context "with initialize method" do
+    it "builds a repository from the model when no repository is given" do
+      service = described_class.new(model: User)
+      expect(service.repository).to be_a(Rarchitecture::ApplicationRepository)
+    end
+
+    it "uses the given repository instead of building one from the model" do
+      repository = Rarchitecture::ApplicationRepository.new(User.all)
+      service = described_class.new(model: User, repository: repository)
+
+      expect(service.repository).to eq(repository)
+    end
+
+    it "does not build a repository when the model does not respond to all" do
+      model = Class.new
+      service = described_class.new(model: model)
+
+      expect(service.repository).to be_nil
+    end
+  end
+
+  context "when the model does not support repository-backed actions" do
+    let(:model) { Class.new }
+    let(:service) { described_class.new(model: model) }
+
+    it "raises NotImplementedError from all" do
+      expect { service.all }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from find" do
+      expect { service.find(1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from count" do
+      expect { service.count }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from find_by" do
+      expect { service.find_by(id: 1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from new" do
+      expect { service.new }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    # `create` is not covered here: spec_helper.rb redefines it globally to call
+    # `model.create` (skipping `create!`/`reload`) so the test Model double works,
+    # which bypasses the guard under test.
+
+    it "raises NotImplementedError from update (via find)" do
+      expect { service.update(1, {}) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from destroy (via find)" do
+      expect { service.destroy(1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+  end
+
   context "with all method" do
     it "returns a collection of all users" do
       expect(@service.all).to eq([@user2, @user])
