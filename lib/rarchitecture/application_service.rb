@@ -15,7 +15,7 @@ module Rarchitecture
       @model = model
       @user  = user
       @repository = repository
-      @repository ||= ApplicationRepository.new(model.all)
+      @repository ||= ApplicationRepository.new(model.all) if model.respond_to?(:all)
     end
 
     def all(includes: [], **query)

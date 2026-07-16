@@ -14,6 +14,27 @@ RSpec.describe Rarchitecture::ApplicationService do
     expect(described_class).to be_a(Class)
   end
 
+  context "with initialize method" do
+    it "builds a repository from the model when no repository is given" do
+      service = described_class.new(model: User)
+      expect(service.repository).to be_a(Rarchitecture::ApplicationRepository)
+    end
+
+    it "uses the given repository instead of building one from the model" do
+      repository = Rarchitecture::ApplicationRepository.new(User.all)
+      service = described_class.new(model: User, repository: repository)
+
+      expect(service.repository).to eq(repository)
+    end
+
+    it "does not build a repository when the model does not respond to all" do
+      model = Class.new
+      service = described_class.new(model: model)
+
+      expect(service.repository).to be_nil
+    end
+  end
+
   context "with all method" do
     it "returns a collection of all users" do
       expect(@service.all).to eq([@user2, @user])
