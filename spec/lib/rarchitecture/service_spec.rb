@@ -35,6 +35,57 @@ RSpec.describe Rarchitecture::ApplicationService do
     end
   end
 
+  context "when the model does not support repository-backed actions" do
+    let(:model) { Class.new }
+    let(:service) { described_class.new(model: model) }
+
+    it "raises NotImplementedError from all" do
+      expect { service.all }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from find" do
+      expect { service.find(1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from count" do
+      expect { service.count }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from find_by" do
+      expect { service.find_by(id: 1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from new" do
+      expect { service.new }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    # `create` is not covered here: spec_helper.rb redefines it globally to call
+    # `model.create` (skipping `create!`/`reload`) so the test Model double works,
+    # which bypasses the guard under test.
+
+    it "raises NotImplementedError from update (via find)" do
+      expect { service.update(1, {}) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+
+    it "raises NotImplementedError from destroy (via find)" do
+      expect { service.destroy(1) }.to raise_error(
+        Rarchitecture::ApplicationService::NotImplementedError, "#{model} does not support this action",
+      )
+    end
+  end
+
   context "with all method" do
     it "returns a collection of all users" do
       expect(@service.all).to eq([@user2, @user])
