@@ -26,7 +26,7 @@ module Rarchitecture
     def find(id, includes: [])
       assert_repository!
       record = repository.include(*includes).get(id)
-      assert! record.present?, on_error: "#{model.class_name} not found"
+      assert! record.present?, on_error: "#{model.name} not found"
 
       record
     end
