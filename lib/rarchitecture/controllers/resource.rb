@@ -26,6 +26,10 @@ module Resource
     inferred_model
   end
 
+  def authorize!(*truths, on_error: "Not allowed")
+    raise ApplicationService::Unauthorized, on_error if truths.none?
+  end
+
   def inferred_model
     return @class_name if defined? @class_name
 
