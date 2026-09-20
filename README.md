@@ -683,6 +683,95 @@ If no custom methods are defined:
 - Add formats only when needed
 - No boilerplate required for simple resources
 
+## 7. ApplicationPresenter
+Specialized object shaper for turning a model into a plain Ruby hash.
+Unlike `ApplicationOutput`, it carries no response envelope (no status, message, or root key), so it can be reused from a service or composed inside an output.
+
+#### 👉 Note:
+Call a presenter from a service, or from inside an output — e.g. `ApplicationOutput#format = UserPresenter.new(@object).as_json`.
+Because it also supports `.as_struct`, it can back Rails views directly.
+
+#### Usage:
+```ruby
+  class UserPresenter < ApplicationPresenter
+    def presentation
+      { id: object.id, email: object.email }
+    end
+
+    def mini_presentation
+      { email: object.email }
+    end
+  end
+
+  UserPresenter.new(user).presentation
+  # => { id: 1, email: "..." }
+
+  UserPresenter.new(user).as_json
+  # => { "id" => 1, "email" => "..." }
+
+  UserPresenter.new(user, use: :mini_presentation).as_json
+  # => { "email" => "..." }
+
+  UserPresenter.array(users).as_json
+  # => [{ "id" => 1, "email" => "..." }]
+```
+
+### Additional Methods
+- `.presentation`
+  - Returns the raw hash from the chosen presentation method, with the symbol keys exactly as written. Handy when a service or view needs the hash itself.
+
+- `.as_json`
+  - Returns the JSON-compatible hash (string keys). Handy for controllers, helpers, or composing inside an output.
+
+- `.to_json`
+  - Returns the raw JSON string representation. Useful for logging or API responses.
+
+- `.as_struct`
+  - Returns the hash wrapped as a Ruby `Struct`, so templates and services get dot-notation (`user.email`) instead of hash access.
+
+### When to Use
+- `Reusable object shaping` → call `presentation` from a service.
+- `Composing inside an output` → call `as_json` from `ApplicationOutput#format`.
+- `Rails views / helpers` → `as_struct` or `presentation` for clean access.
+
+### 🛠 Presenter Generator
+Generates a presenter class for shaping a model.
+
+#### Command:
+```bash
+  rails g rarchitecture:presenter User
+```
+
+#### This creates:
+```bash
+create  app/presenters/user_presenter.rb
+```
+
+#### What’s Included:
+- UserPresenter inheriting from ApplicationPresenter
+- Support for custom presentation formats (`presentation`, `mini_presentation`, ...)
+
+#### Custom presenter example:
+```ruby
+  class UserPresenter < ApplicationPresenter
+    def mini_presentation
+      { email: object.email }
+    end
+  end
+
+  UserPresenter.new(user, use: :mini_presentation).presentation
+  # => { email: "saiful@gmail.com" }
+```
+
+Default Behavior
+If no presentation methods are defined:
+- Presenter will fallback to:
+
+```ruby
+@object.as_json
+```
+- Add formats only when needed, no boilerplate required for simple objects.
+
 ## 8. Generators
 
 ### Initialize Base Architecture
@@ -691,7 +780,7 @@ rails generate rarchitecture:init
 ```
 
 Creates the shared base layers:
-- Repositories, Services, Inputs, Outputs
+- Repositories, Services, Inputs, Outputs, Presenters
 - Exceptions
 - Base API and View controllers
 
