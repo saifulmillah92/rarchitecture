@@ -29,6 +29,12 @@ module Rarchitecture
         template "application_output.rb.tt", "app/outputs/application_output.rb"
       end
 
+      def create_application_presenter
+        return unless options[:for].in?(["all", "presenter"])
+
+        template "application_presenter.rb.tt", "app/presenters/application_presenter.rb"
+      end
+
       def create_application_input
         return unless options[:for].in?(["all", "input"])
 

@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+#
+# ApplicationPresenter
+# Base class for shaping objects into plain hashes.
+# Inherits from Rarchitecture::ApplicationPresenter.
+#
+# Responsibilities:
+# - Shape a single object through an overridable `presentation` method.
+# - Support format variants (`presentation`, `mini_presentation`, ...).
+# - Be callable from a service, or from inside an output.
+#
+# Quick Example:
+#   ApplicationPresenter.new(user).presentation
+#   # => { id: 1, email: "..." }
+#
+# For advanced usage or custom presentation formats, see README.md.
+#
+class ApplicationPresenter < Rarchitecture::ApplicationPresenter
+  # Extend or override methods here
+
+  Array = Rarchitecture::ApplicationPresenter::Array
+end

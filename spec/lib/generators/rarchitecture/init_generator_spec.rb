@@ -15,6 +15,7 @@ RSpec.describe Rarchitecture::Generators::InitGenerator, type: :generator do
     it "creates the core architecture files" do
       expect(file("app/inputs/application_input.rb")).to exist
       expect(file("app/outputs/application_output.rb")).to exist
+      expect(file("app/presenters/application_presenter.rb")).to exist
       expect(file("app/lib/application_exception.rb")).to exist
       expect(file("app/repositories/application_repository.rb")).to exist
       expect(file("app/services/application_service.rb")).to exist
