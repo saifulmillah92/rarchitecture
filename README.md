@@ -712,6 +712,9 @@ Because it also supports `.as_struct`, it can back Rails views directly.
   UserPresenter.new(user, use: :mini_presentation).as_json
   # => { "email" => "..." }
 
+  UserPresenter.array(users).presentation
+  # => [{ id: 1, email: "..." }]
+
   UserPresenter.array(users).as_json
   # => [{ "id" => 1, "email" => "..." }]
 ```

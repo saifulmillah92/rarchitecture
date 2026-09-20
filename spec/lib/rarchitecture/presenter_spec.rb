@@ -40,7 +40,17 @@ RSpec.describe Rarchitecture::ApplicationPresenter do
     expect(UserPresenter.new(nil).as_json).to be_nil
   end
 
-  it "presents a collection through the item presenter" do
+  it "presents a collection as an array of hashes" do
+    alex = User.create(name: "Alex", email: "alex@example.com")
+    result = UserPresenter.array(User.all).presentation
+
+    expect(result).to contain_exactly(
+      { id: @user.id, name: "Saiful", email: "saiful@example.com" },
+      { id: alex.id, name: "Alex", email: "alex@example.com" },
+    )
+  end
+
+  it "returns JSON-compatible hashes for a collection" do
     User.create(name: "Alex", email: "alex@example.com")
     result = UserPresenter.array(User.all).as_json
 
