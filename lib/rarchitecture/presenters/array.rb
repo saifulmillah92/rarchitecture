@@ -7,7 +7,8 @@
 # presenter, mirroring Outputs::Array without the response envelope.
 #
 # Usage:
-#   Presenters::Array.new(users, item_presenter: UserPresenter).as_json
+#   Presenters::Array.new(users, item_presenter: UserPresenter).presentation
+#   # => [{ id: 1, email: "..." }, ...]
 #
 
 module Presenters
@@ -16,15 +17,11 @@ module Presenters
       super(Array(objects), options)
     end
 
-    def as_json(*args)
-      outputs.map { |presenter| presenter.as_json(*args) }
-    end
-
     def as_struct
-      outputs.map(&:as_struct)
+      presentation.map(&:as_struct)
     end
 
-    def presentation = outputs
+    def presentation = outputs.map(&:presentation)
     def presentation_method = :presentation
 
     def outputs
